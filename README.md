@@ -5,6 +5,7 @@ Periodo: Septiembre - Diciembre 2026
 
 ---
 
-| ID | Numero de Practica | Nombre de la Practica | Potenciador | Estatus |
+| No. | Nombre de la Practica | Descripcion | Potenciador | Estatus |
 |---|---|---|---|--|
-| 1. | Practica 02 | Conexion Remota en MySQL | 42 | En desarrollo |
+| 1. | Practica 02 | Metodologia de evaluacion de la materia | Transcribir en libreta y comprender la metodologia y fechas de evaluacion de la asignatura | 6 | Concluida |
+| 2. | Practica 02 | Conexiones remotas para Bases de Datos SQL | Crear y administrar usuarios y privilegios para conexiones desde internet o redes locales | ?? | En progreso |
