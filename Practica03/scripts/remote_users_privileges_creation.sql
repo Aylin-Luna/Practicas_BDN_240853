@@ -43,6 +43,7 @@ GRANT SELECT, INSERT, UPDATE ON db_test.tbc_categories TO 'support';
 GRANT SELECT, INSERT, UPDATE ON db_test.tbd_products_categories TO 'support';
 GRANT SELECT ON db_test.tb_logs TO 'support';
 GRANT SELECT ON mysql.role_edges TO 'support';
+GRANT EXECUTE ON PROCEDURE db_test.sp_soft_delete_user TO 'support';
 
 -- Privilegios de Seller (Gestionar productos y cargar categorías)
 GRANT SELECT, INSERT, UPDATE ON db_test.tb_products TO 'seller';
