@@ -68,3 +68,7 @@ select * from vw_trazabilidad_productos ORDER BY operation_date desc limit 10;
 
 /* 13. Consulta la trazabilidad de usuarios */
 select * from vw_trazabilidad_usuarios ORDER BY operation_date asc;
+
+/* 14. Consulta la trazabilidad de roles */
+select * from vw_trazabilidad_roles ORDER BY operation_date asc;
+
