@@ -1,0 +1,519 @@
+# PROMPT MAESTRO: DOCUMENTACIÓN INTEGRAL Y DICCIONARIO DE DATOS PARA ARCHIFY
+
+## 1. PERFIL Y RESPONSABILIDAD
+
+Actúa como un arquitecto de software senior, especialista en ingeniería de datos, administración de bases de datos MySQL, análisis de sistemas, modelado entidad-relación, seguridad informática, auditoría, documentación técnica e ingeniería inversa.
+
+Tu objetivo es realizar un análisis exhaustivo de la base de datos proporcionada y construir una documentación integral que permita comprender su naturaleza, estructura, propósito, comportamiento, reglas de negocio, relaciones, procesos y mecanismos de control.
+
+No generes una descripción genérica. Construye la documentación a partir del contenido real del archivo SQL y desarrolla explicaciones profundas, organizadas y técnicamente fundamentadas.
+
+## 2. FUENTE PRINCIPAL Y ALCANCE
+
+Archivo fuente: `211026.sql`.
+
+Nombre de la base de datos: `db_test`.
+
+Motor identificado en el respaldo: MySQL, versión 8.0.36, sujeto a confirmación mediante el contenido del archivo.
+
+Analiza el archivo completo, incluyendo:
+- Sentencias de creación de la base de datos.
+- Definiciones de tablas.
+- Columnas y tipos de datos.
+- Claves primarias y foráneas.
+- Índices y restricciones.
+- Valores predeterminados.
+- Datos insertados, cuando existan.
+- Vistas.
+- Triggers.
+- Procedimientos almacenados.
+- Funciones.
+- Eventos programados.
+- Comentarios y metadatos.
+- Relaciones y dependencias entre objetos.
+
+Si algún componente no aparece en el respaldo, indícalo expresamente. No afirmes que un objeto no existe en el sistema completo únicamente porque no aparece en el archivo de respaldo.
+
+## 3. NATURALEZA DE LA BASE DE DATOS
+
+Desarrolla un apartado amplio titulado **Naturaleza y caracterización de la base de datos**.
+
+Incluye los siguientes puntos:
+
+### 3.1 Naturaleza funcional
+Explica qué tipo de sistema parece soportar la base de datos, cuál es su finalidad principal y qué necesidades operativas intenta resolver.
+
+Determina si el esquema está relacionado con administración de usuarios, productos, categorías, proveedores, carritos, pedidos, pagos, listas de deseos, auditoría u otros dominios, siempre de acuerdo con las evidencias encontradas.
+
+### 3.2 Naturaleza de la información
+Clasifica los datos presentes en:
+- Datos maestros.
+- Datos transaccionales.
+- Datos de catálogo.
+- Datos de configuración.
+- Datos de identificación.
+- Datos de relación.
+- Datos históricos y de auditoría.
+- Datos derivados o calculados, si existen.
+
+Explica la función de cada categoría y señala qué tablas la representan.
+
+### 3.3 Naturaleza estructural
+Describe el modelo de datos, el tipo de organización relacional, la distribución de entidades y la forma en que se conectan las tablas.
+
+Explica las ventajas y limitaciones observables de la estructura actual.
+
+### 3.4 Naturaleza operativa
+Identifica qué operaciones puede representar el esquema: registro, consulta, actualización, eliminación, asociación, compra, pago, seguimiento, auditoría u otras.
+
+Distingue entre las operaciones que el esquema permite estructuralmente y aquellas cuya ejecución real no puede demostrarse solo con el SQL.
+
+### 3.5 Naturaleza histórica y de trazabilidad
+Explica cómo se conserva o podría conservarse el historial de operaciones a partir de las tablas, triggers y objetos realmente presentes.
+
+Determina si se almacenan fechas, usuarios responsables, estados, eventos o cambios de información.
+
+### 3.6 Naturaleza de seguridad y privacidad
+Identifica posibles categorías de información personal, comercial, financiera o de autenticación presentes en el esquema.
+
+Describe los riesgos que se pueden deducir de la estructura y señala qué controles de seguridad están demostrados por el SQL y cuáles requerirían verificar la aplicación o la configuración del servidor.
+
+### 3.7 Naturaleza de integridad
+Explica cómo las claves primarias, claves foráneas, restricciones, índices únicos, valores predeterminados y validaciones ayudan a conservar la consistencia de la información.
+
+### 3.8 Limitaciones de la caracterización
+Indica qué aspectos no pueden determinarse únicamente con el respaldo, como la cantidad real de usuarios activos, los permisos de la aplicación, el volumen de producción, la frecuencia de operaciones o las reglas implementadas exclusivamente en el código fuente.
+
+## 4. IDENTIFICACIÓN Y CONTEXTO DEL SISTEMA
+
+Genera una ficha técnica que contenga:
+- Nombre de la base de datos.
+- Tecnología y versión identificadas.
+- Propósito funcional.
+- Dominio de negocio.
+- Objetivos que permite respaldar.
+- Tipos de usuarios o actores inferibles.
+- Principales procesos del sistema.
+- Entidades principales.
+- Entidades dependientes.
+- Información sensible identificada.
+- Componentes de auditoría.
+- Limitaciones de la fuente.
+- Supuestos y nivel de certeza de cada conclusión.
+
+Separa claramente los hechos comprobados, las interpretaciones técnicas y las hipótesis.
+
+## 5. INVENTARIO COMPLETO DE OBJETOS
+
+Construye un inventario de todos los objetos encontrados en el archivo.
+
+Para cada tabla incluye:
+- Nombre exacto.
+- Descripción funcional detallada.
+- Propósito dentro del sistema.
+- Módulo funcional.
+- Tipo de información que contiene.
+- Entidades relacionadas.
+- Dependencias entrantes y salientes.
+- Importancia dentro del modelo.
+- Consecuencias potenciales de modificar o eliminar registros.
+- Número de columnas.
+- Número de claves foráneas.
+- Índices y restricciones relevantes.
+
+Realiza inventarios independientes de tablas, vistas, triggers, procedimientos, funciones y eventos.
+
+No omitas tablas auxiliares, tablas intermedias ni tablas que parezcan tener una función secundaria.
+
+## 6. DICCIONARIO DE DATOS EXHAUSTIVO
+
+Documenta absolutamente todas las columnas de todas las tablas.
+
+Para cada columna proporciona una ficha con los siguientes atributos:
+
+1. Nombre de la base de datos.
+2. Nombre exacto de la tabla.
+3. Nombre exacto de la columna.
+4. Tipo de dato SQL completo.
+5. Longitud, precisión y escala.
+6. Permite valores NULL.
+7. Clave primaria.
+8. Clave foránea.
+9. Tabla y columna referenciadas.
+10. Valor predeterminado.
+11. Propiedad AUTO_INCREMENT.
+12. Índices en los que participa.
+13. Restricciones aplicables.
+14. Descripción funcional.
+15. Significado semántico.
+16. Naturaleza del dato.
+17. Uso dentro del proceso de negocio.
+18. Dependencias con otros campos.
+19. Reglas de validación demostrables.
+20. Ejemplo representativo del valor, cuando pueda obtenerse sin exponer información sensible.
+21. Riesgos de integridad asociados.
+22. Origen de la descripción: explícita, inferida o pendiente de confirmar.
+
+Presenta la información en tablas Markdown legibles. Si el resultado es demasiado extenso, divídelo por tabla y continúa hasta documentar todos los campos.
+
+No reduzcas el diccionario a una lista de nombres y tipos. Explica qué representa cada campo y cómo contribuye al funcionamiento del sistema.
+
+## 7. CLASIFICACIÓN SEMÁNTICA DE LOS DATOS
+
+Clasifica las columnas de acuerdo con su naturaleza:
+
+- Identificadores.
+- Datos descriptivos.
+- Datos de contacto.
+- Datos comerciales.
+- Datos monetarios.
+- Estados y clasificaciones.
+- Fechas y marcas de tiempo.
+- Indicadores booleanos.
+- Relaciones entre entidades.
+- Credenciales y datos de autenticación.
+- Datos de auditoría.
+- Datos derivados.
+- Datos de configuración.
+
+Para cada categoría explica:
+- Su propósito.
+- Las tablas en las que aparece.
+- Las reglas de manejo que pueden verificarse.
+- Los riesgos potenciales.
+- Las recomendaciones de documentación y protección.
+
+No clasifiques como dato sensible un campo sin justificarlo por su contenido o función.
+
+## 8. RELACIONES Y CARDINALIDADES
+
+Documenta todas las relaciones entre tablas.
+
+Para cada relación incluye:
+- Entidad de origen.
+- Atributo de origen.
+- Entidad de destino.
+- Atributo de destino.
+- Clave que implementa la relación.
+- Cardinalidad confirmada o inferida.
+- Participación obligatoria u opcional, cuando pueda determinarse.
+- Restricciones ON DELETE y ON UPDATE.
+- Función dentro del dominio de negocio.
+- Consecuencias de eliminar o modificar la entidad relacionada.
+
+Distingue las relaciones implementadas mediante claves foráneas de las relaciones inferidas por nombres o convenciones.
+
+Genera un diagrama entidad-relación Mermaid completo. Si es demasiado grande, divídelo por módulos sin omitir entidades ni dependencias.
+
+## 9. MÓDULOS FUNCIONALES
+
+Agrupa las tablas en módulos lógicos, basándote en su estructura y contenido.
+
+Investiga, si existen evidencias suficientes, módulos como:
+- Administración de usuarios.
+- Productos.
+- Categorías.
+- Proveedores.
+- Carritos de compra.
+- Pedidos.
+- Detalles de pedidos.
+- Métodos de pago.
+- Pagos.
+- Listas de deseos.
+- Auditoría y trazabilidad.
+- Configuración del sistema.
+
+Para cada módulo explica:
+1. Objetivo.
+2. Tablas involucradas.
+3. Datos que administra.
+4. Operaciones que representa.
+5. Relaciones con otros módulos.
+6. Reglas de integridad.
+7. Riesgos de consistencia.
+8. Información que permite consultar.
+9. Dependencias críticas.
+10. Limitaciones identificadas.
+
+No fuerces una tabla a un módulo si no existe evidencia suficiente.
+
+## 10. REGLAS DE NEGOCIO Y VALIDACIONES
+
+Extrae y documenta todas las reglas verificables en el esquema.
+
+Incluye:
+- Campos obligatorios.
+- Unicidad de datos.
+- Restricciones CHECK.
+- Valores predeterminados.
+- Restricciones referenciales.
+- Validaciones implementadas en triggers.
+- Reglas relacionadas con estados.
+- Restricciones sobre importes y cantidades, cuando existan.
+- Condiciones para insertar, actualizar o eliminar registros, si están expresadas en SQL.
+
+Por cada regla indica:
+- Identificador.
+- Descripción.
+- Tabla y campos afectados.
+- Implementación encontrada.
+- Efecto esperado.
+- Evidencia SQL.
+- Nivel de certeza.
+
+Separa las reglas explícitas de las recomendaciones de negocio que no estén implementadas.
+
+## 11. CICLO DE VIDA DE LOS DATOS
+
+Describe cómo podrían recorrer las entidades sus procesos de creación, modificación, consulta y eliminación.
+
+Si la estructura representa un flujo comercial, analiza las posibles etapas de productos, carritos, pedidos, pagos y listas de deseos.
+
+Construye diagramas Mermaid de procesos únicamente cuando las transiciones estén respaldadas por campos, estados, restricciones, triggers u otros elementos del SQL.
+
+No inventes estados ni afirmes que un proceso está implementado cuando solo puede inferirse del modelo.
+
+## 12. AUDITORÍA Y TRAZABILIDAD
+
+Analiza detalladamente:
+- Tablas de logs.
+- Campos de fecha y hora.
+- Identificadores de usuarios.
+- Triggers de auditoría.
+- Eventos que generan registros.
+- Información que se conserva.
+- Posibilidad de identificar quién realizó una operación.
+- Posibilidad de reconstruir cambios históricos.
+- Limitaciones del historial.
+- Riesgos de pérdida, alteración o duplicación de registros.
+
+Para cada trigger documenta nombre, tabla asociada, evento, momento de ejecución, acción, tablas afectadas y dependencias.
+
+Si el archivo contiene triggers de inserción, actualización y eliminación, explica sus diferencias.
+
+No atribuyas capacidades de auditoría a objetos que no estén presentes en la fuente.
+
+## 13. SEGURIDAD, PRIVACIDAD Y CONTROL DE ACCESO
+
+Analiza los siguientes aspectos:
+- Posibles datos personales.
+- Datos de autenticación.
+- Información comercial.
+- Información de pagos.
+- Exposición potencial de credenciales.
+- Restricciones de integridad.
+- Permisos SQL, si están incluidos.
+- Posibilidad de identificar responsables de operaciones.
+- Riesgos relacionados con registros históricos.
+- Necesidades de minimización y retención de datos.
+
+Clasifica cada hallazgo como:
+- Confirmado por el SQL.
+- Riesgo potencial.
+- Requiere revisar la aplicación.
+- Requiere revisar la configuración del servidor.
+
+No afirmes que una base de datos es segura o insegura únicamente por los nombres de sus tablas.
+
+## 14. ÍNDICES Y RENDIMIENTO
+
+Documenta todos los índices y explica:
+- Columnas indexadas.
+- Tipo de índice.
+- Unicidad.
+- Relación con claves primarias y foráneas.
+- Consultas que potencialmente podrían beneficiarse.
+- Posibles índices redundantes.
+- Riesgos de rendimiento observables.
+
+Distingue entre hallazgos comprobados y recomendaciones que necesitarían estadísticas, consultas reales o pruebas de rendimiento.
+
+## 15. DEPENDENCIAS E IMPACTO DE CAMBIOS
+
+Construye una matriz de dependencias que identifique:
+- Qué tablas dependen de otras.
+- Qué vistas utilizan cada tabla.
+- Qué triggers se activan sobre cada tabla.
+- Qué objetos podrían verse afectados por un cambio.
+- Qué restricciones podrían impedir una operación.
+- Qué elementos conviene probar antes de modificar el esquema.
+
+Genera un diagrama de dependencias con Mermaid cuando sea viable.
+
+## 16. VISTAS, PROCEDIMIENTOS, FUNCIONES Y EVENTOS
+
+Documenta cada objeto programable encontrado.
+
+Para cada vista:
+- Propósito.
+- Tablas de origen.
+- Columnas expuestas.
+- Joins.
+- Filtros.
+- Agregaciones.
+- Dependencias.
+
+Para cada procedimiento o función:
+- Parámetros.
+- Tipo de retorno, si aplica.
+- Operaciones realizadas.
+- Tablas afectadas.
+- Validaciones.
+- Efectos secundarios.
+
+Para cada evento:
+- Programación.
+- Frecuencia.
+- Acción.
+- Dependencias.
+
+No inventes definiciones que no aparezcan en el archivo.
+
+## 17. NORMALIZACIÓN Y CALIDAD DEL MODELO
+
+Evalúa, con base en la estructura observable:
+- Claves primarias.
+- Dependencias funcionales que puedan justificarse.
+- Posibles duplicidades.
+- Separación entre entidades.
+- Uso de tablas intermedias.
+- Posibles anomalías de inserción, actualización o eliminación.
+- Consistencia de nombres.
+- Campos con responsabilidades ambiguas.
+- Relaciones redundantes.
+
+Analiza las formas normales cuando exista suficiente información. No declares que el modelo cumple una forma normal sin justificarlo.
+
+Presenta las mejoras potenciales en una sección separada. No modifiques el esquema original ni mezcles recomendaciones con la documentación actual.
+
+## 18. CATÁLOGOS, ESTADOS Y DOMINIOS
+
+Identifica columnas que funcionen como estados, tipos, categorías o indicadores.
+
+Para cada una documenta:
+- Tabla y columna.
+- Tipo de dato.
+- Valores encontrados en el respaldo.
+- Valores permitidos mediante restricciones explícitas.
+- Significado conocido.
+- Significado inferido.
+- Reglas de transición, si existen.
+- Posibles inconsistencias.
+
+No presentes los valores observados en registros como una lista exhaustiva de valores permitidos si el SQL no establece esa limitación.
+
+## 19. DATOS DE EJEMPLO Y MUESTRAS
+
+Cuando el respaldo incluya registros:
+- Utiliza ejemplos representativos.
+- Explica qué información demuestra cada ejemplo.
+- Relaciona los registros con las tablas correspondientes.
+- Evita reproducir contraseñas, tokens, información financiera sensible o datos personales innecesarios.
+- No inventes registros ni valores.
+- Si no existen datos suficientes, utiliza ejemplos ficticios claramente identificados como ilustrativos.
+
+## 20. DIAGRAMAS ARQUITECTÓNICOS
+
+Genera, cuando la información lo permita:
+
+1. Diagrama entidad-relación general.
+2. Diagramas entidad-relación por módulo.
+3. Diagrama de dependencias entre tablas.
+4. Diagrama del proceso transaccional.
+5. Diagrama de auditoría y trazabilidad.
+6. Diagrama de componentes de base de datos.
+
+Utiliza Mermaid y asegúrate de que los nombres de tablas y relaciones coincidan con los objetos reales.
+
+Si un diagrama es demasiado extenso, divídelo en varios diagramas relacionados y explica cómo se conectan.
+
+## 21. GLOSARIO TÉCNICO Y FUNCIONAL
+
+Construye un glosario con:
+- Términos técnicos.
+- Entidades.
+- Abreviaturas.
+- Prefijos de nombres.
+- Conceptos de negocio.
+- Tipos de datos importantes.
+- Conceptos de auditoría.
+- Reglas de integridad.
+- Significado de estados y códigos identificados.
+
+Incluye definiciones claras y consistentes con la estructura analizada.
+
+## 22. MATRIZ DE COBERTURA Y VERIFICACIÓN
+
+Al finalizar, incluye una matriz que muestre:
+- Total de tablas encontradas.
+- Total de tablas documentadas.
+- Total de columnas encontradas.
+- Total de columnas documentadas.
+- Claves primarias documentadas.
+- Claves foráneas documentadas.
+- Índices documentados.
+- Vistas encontradas y documentadas.
+- Triggers encontrados y documentados.
+- Procedimientos encontrados y documentados.
+- Funciones encontradas y documentadas.
+- Eventos encontrados y documentados.
+
+Incluye el porcentaje de cobertura de cada categoría cuando se disponga de cantidades verificables.
+
+Agrega una lista de elementos pendientes de validar y explica por qué no pudieron documentarse completamente.
+
+## 23. ESTRUCTURA FINAL DEL DOCUMENTO
+
+Organiza el resultado en el siguiente orden:
+
+1. Portada técnica.
+2. Resumen ejecutivo.
+3. Introducción.
+4. Objetivo y alcance.
+5. Metodología de análisis.
+6. Naturaleza de la base de datos.
+7. Caracterización funcional y técnica.
+8. Inventario de objetos.
+9. Diccionario completo de tablas y columnas.
+10. Relaciones y modelo entidad-relación.
+11. Módulos funcionales.
+12. Reglas de negocio.
+13. Ciclo de vida de los datos.
+14. Auditoría y trazabilidad.
+15. Seguridad y privacidad.
+16. Índices y rendimiento.
+17. Dependencias e impacto de cambios.
+18. Vistas y objetos programables.
+19. Normalización y calidad del modelo.
+20. Catálogos y dominios.
+21. Ejemplos de datos.
+22. Diagramas arquitectónicos.
+23. Glosario.
+24. Hallazgos y recomendaciones.
+25. Matriz de cobertura.
+26. Conclusiones técnicas.
+27. Anexos y referencias a los objetos SQL.
+
+## 24. CRITERIOS DE CALIDAD
+
+La documentación debe ser extensa, detallada, precisa y útil para desarrolladores, administradores de bases de datos, auditores y arquitectos de software.
+
+Prioriza la profundidad y la cobertura completa por encima de la brevedad.
+
+No omitas columnas, tablas auxiliares, restricciones, índices ni objetos secundarios.
+
+Evita explicaciones genéricas y repeticiones innecesarias. Cada apartado debe aportar información nueva sobre la base de datos.
+
+Identifica explícitamente las evidencias, inferencias, limitaciones y recomendaciones.
+
+Si la salida excede el límite de una respuesta, divide el trabajo en partes numeradas y continúa desde el último apartado completado hasta terminar el documento. Mantén un índice de progreso para evitar omisiones.
+
+## 25. INSTRUCCIÓN FINAL
+
+Analiza primero el archivo `151026.sql` completo. Genera una documentación integral de la base de datos `db_test`, incluyendo su naturaleza, semántica, arquitectura, datos, relaciones, reglas de negocio, seguridad, trazabilidad y dependencias.
+
+El resultado debe describir la base de datos real, no un ejemplo genérico.
+
+No inventes objetos, relaciones, reglas, estados, procesos ni resultados. Si una conclusión es inferida, identifícala como tal. Si falta información, documenta la limitación.
+
+Comienza con el análisis del archivo y continúa con todos los apartados hasta completar el diccionario de datos y la documentación arquitectónica.
