@@ -1,0 +1,6 @@
+title: Diccionario técnico de db_test
+description: Esquema MySQL documentado desde el respaldo 151026.sql
+theme: minima
+markdown: kramdown
+highlighter: rouge
+show_excerpts: false

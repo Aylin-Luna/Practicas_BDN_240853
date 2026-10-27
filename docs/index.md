@@ -1,16 +1,64 @@
-# Diccionario integral de datos y arquitectura: db_test
+---
+layout: default
+title: Diccionario de datos db_test
+description: Documentacion del esquema db_test basada en 151026.sql
+---
 
-> Fuente: 151026.sql | Base: db_test | Motor: MySQL 8.0.36
+# db_test
 
-## Resumen ejecutivo
+**Diccionario de datos y documentacion arquitectonica**
+
+Base relacional orientada a operaciones de comercio electronico: catalogo, cuentas, relaciones comerciales, pedidos, pagos y auditoria.
+
+| Archivo fuente | Motor declarado | Fecha de generacion | Alcance |
+|---|---|---|---|
+| `Practica03/backups/151026.sql` | MySQL 8.0.36 | 21 de octubre de 2026 | Analisis estatico del respaldo |
+
+> Este documento describe las definiciones del SQL. No certifica que el respaldo se haya importado correctamente ni que una instalacion de produccion coincida con el archivo.
+
+## Estadisticas verificadas
+
+| Tablas | Columnas | Vistas finales | Triggers |
+|---:|---:|---:|---:|
+| **14** | **99** | **6** | **15** |
+
+| Claves primarias | Claves foraneas | Indices declarados | CHECK |
+|---:|---:|---:|---:|
+| **14** | **13** | **35** | **4** |
+
+Los 35 indices se desglosan en 14 indices de PK, 7 UNIQUE secundarios y 14 indices secundarios no unicos. Las claves UNIQUE no incluyen PK en este conteo.
+
+## Contenido
+
+1. [Resumen ejecutivo](#2-resumen-ejecutivo)
+2. [Alcance y metodologia](#3-alcance-y-metodologia)
+3. [Naturaleza de la base de datos](#4-naturaleza-de-la-base-de-datos)
+4. [Inventario de objetos](#5-inventario-de-objetos)
+5. [Modelo entidad-relacion](#6-modelo-entidad-relacion)
+6. [Diccionario de tablas y columnas](#7-diccionario-de-tablas-y-columnas)
+7. [Claves, indices y restricciones](#8-claves-indices-y-restricciones)
+8. [Relaciones entre entidades](#9-relaciones-entre-entidades)
+9. [Vistas](#10-vistas)
+10. [Triggers](#11-triggers)
+11. [Auditoria y trazabilidad](#12-auditoria-y-trazabilidad)
+12. [Reglas de negocio](#13-reglas-de-negocio)
+13. [Seguridad y privacidad](#14-seguridad-y-privacidad)
+14. [Rendimiento](#15-rendimiento)
+15. [Normalizacion y calidad](#16-normalizacion-y-calidad)
+16. [Modulos y dependencias](#17-modulos-y-dependencias)
+17. [Glosario](#18-glosario)
+18. [Matriz de cobertura](#19-matriz-de-cobertura)
+19. [Conclusiones y recomendaciones](#20-conclusiones-y-recomendaciones)
+
+## 2. Resumen ejecutivo
 
 El esquema representa un sistema de comercio electronico con cuentas, catalogo, categorias, relaciones comerciales, carrito, pedidos, pagos, listas de deseos y auditoria. Incluye 14 tablas, 99 columnas, 6 vistas finales, 15 triggers, 13 claves foraneas y cuatro CHECK. No aparecen procedimientos, funciones ni eventos en este respaldo. Estas conclusiones describen el archivo, no la aplicacion ni una instancia productiva.
 
-## Alcance y método
+## 3. Alcance y metodologia
 
-Fuente única del análisis estructural: [`151026.sql`](Practica03/backups/151026.sql). Se analizaron las sentencias DDL, vistas, triggers, restricciones e índices. Los `INSERT` del respaldo se excluyen de este documento; los ejemplos son ficticios. El archivo es un dump, no una conexión a una instancia, por lo que no acredita que todos los objetos se hayan importado con éxito.
+Fuente única del análisis estructural: `Practica03/backups/151026.sql`. Se analizaron las sentencias DDL, vistas, triggers, restricciones e índices. Los `INSERT` del respaldo se excluyen de este documento; los ejemplos son ficticios. El archivo es un dump, no una conexión a una instancia, por lo que no acredita que todos los objetos se hayan importado con éxito.
 
-## 1. Naturaleza y descripción general
+## 4. Naturaleza de la base de datos
 
 `db_test` se crea con `utf8mb4`, colación `utf8mb4_0900_ai_ci`, cifrado predeterminado desactivado y tablas InnoDB. El encabezado indica MySQL Server 8.0.36 y MySQL dump 10.13. Es una base relacional con orientación clara a comercio electrónico: catálogo de productos y categorías, relaciones con usuarios por propiedad/venta/distribución, carritos/listas de deseos, pedidos, líneas de pedido, métodos de pago y pagos. Incluye además bitácora general y una tabla específica de trazabilidad de productos.
 
@@ -24,25 +72,66 @@ Fuente única del análisis estructural: [`151026.sql`](Practica03/backups/15102
 
 **Nomenclatura.** Prefijos aproximados: `tb` entidad, `tbc` catálogo, `tbd` detalle/asociación, `tbh` historial; `vw` vista; `trg` trigger. Conviven `ID`, `user_ID`, `user_id`, mayúsculas/minúsculas, inglés y español; la comparación de identificadores en MySQL depende del entorno/colación en ciertos contextos. Restricciones usan prefijos `fk_`, `chk_`, `uk_`/`uq_`, índices `idx_`.
 
-## 2. Inventario de objetos
+## 5. Inventario de objetos
 
 | Tipo | Cantidad | Objetos |
 |---|---:|---|
 | Tablas | 14 | `tb_carts`, `tb_logs`, `tb_orders`, `tb_payment_methods`, `tb_payments`, `tb_products`, `tb_users`, `tbc_categories`, `tbd_order_items`, `tbd_products_categories`, `tbd_products_users_providers`, `tbd_users_wishlist_products`, `tbd_wishlist_products`, `tbh_trazabilidad_productos` |
 | Vistas finales | 6 | `vw_total_products_by_category`, `vw_trazabilidad_categorias`, `vw_trazabilidad_productos`, `vw_trazabilidad_productos_categorias`, `vw_trazabilidad_proveedores`, `vw_trazabilidad_usuarios` |
 | Triggers | 15 | Tres operaciones DML en cinco tablas: productos, usuarios, categorias, relacion producto-categoria y proveedores |
-| Claves foráneas | 13 | Enumeradas en §5 |
-| Claves primarias | 14 | Una por tabla; `tbd_order_items`, `tbd_products_categories`, `tbd_products_users_providers`, ambas wishlist usan PK compuesta |
-| Índices únicos | 7 | `uk_cart_user`, `uq_payment_method_code`, `uq_payment_reference`, `SKU`, `email`, `nickname`, `name` (sin contar PKs) |
-| Indices secundarios explicitos | 14 | Indexes non-unique declared outside primary keys |
+| Claves foráneas | 13 | Enumeradas en el modelo entidad-relación |
+| Claves primarias | 14 | Una por tabla; cinco tablas usan PK compuesta: `tbd_order_items`, `tbd_products_categories`, `tbd_products_users_providers` y ambas wishlist |
+| Índices únicos | 7 | `uk_cart_user`, `uq_payment_method_code`, `uq_payment_reference`, `SKU`, `email`, `nickname`, `name` (sin contar PK) |
+| Índices secundarios | 14 | Declaraciones KEY no únicas, fuera de las PK |
 | Columnas generadas | 1 | `tbd_order_items.line_total` almacenada |
 | CHECK | 4 | `chk_order_amounts`, `chk_payment_amount`, `chk_order_item_price`, `chk_order_item_quantity` |
-| ENUM | 6 campos | `tb_logs.table_operation`, `tb_logs.operation`, `tb_orders.order_status`, `tb_payments.payment_status`, `tbd_products_users_providers.type_ownership`, `tbh_trazabilidad_productos.accion` (6 columnas ENUM) |
+| ENUM | 6 campos | `tb_logs.table_operation`, `tb_logs.operation`, `tb_orders.order_status`, `tb_payments.payment_status`, `tbd_products_users_providers.type_ownership`, `tbh_trazabilidad_productos.accion` |
 | JSON / BIT | 1 JSON, 8 BIT | `detalle_cambio`; estados booleanos representados como `BIT(1)` |
 
-El recuento de triggers del archivo puede incluir múltiples bloques de creación para la misma tabla; el catálogo individual está en §7. No hay `CREATE PROCEDURE`, `FUNCTION` ni `EVENT` identificados. Los `DEFINER` observados usan `root`@`localhost` en los triggers.
+Hay 15 nombres de trigger distintos, con una definición por nombre. El dump incluye seis placeholders de vistas (`SELECT 1`) y seis definiciones finales que los reemplazan; el inventario cuenta las seis vistas funcionales. No aparecen `CREATE PROCEDURE`, `CREATE FUNCTION` ni `CREATE EVENT`. Los definidores indicados son `root@localhost`.
 
-## 3. Diccionario de datos por tabla
+## 6. Modelo entidad-relacion
+
+### Relaciones declaradas por FK
+
+| Origen | Destino | Restricción | Cardinalidad justificable | Nulabilidad y acción | Uso |
+|---|---|---|---|---|---|
+| `tb_carts.user_ID` | `tb_users.ID` | `fk_cart_user` | usuario 0..1 carrito; cada carrito 1 usuario (UNIQUE) | origen NOT NULL; sin acción explícita | Carrito de cuenta |
+| `tb_orders.cart_ID` | `tb_carts.ID` | `fk_order_cart` | carrito 0..N pedidos; pedido 0..1 carrito | nullable; DELETE SET NULL | Vincula origen del pedido |
+| `tb_orders.user_ID` | `tb_users.ID` | `fk_order_user` | usuario 0..N pedidos | NOT NULL; acción predeterminada RESTRICT/NO ACTION | Propietario del pedido |
+| `tb_payments.payment_method_ID` | `tb_payment_methods.ID` | `fk_payment_method` | método 0..N pagos | NOT NULL; acción predeterminada | Método usado |
+| `tb_payments.order_ID` | `tb_orders.ID` | `fk_payment_order` | pedido 0..N pagos | NOT NULL; acción predeterminada | Pago asociado |
+| `tbc_categories.sup_id_category` | `tbc_categories.ID` | `fk_superior_category` | padre 0..N hijas; hija 0..1 padre | nullable; acción predeterminada | Jerarquía |
+| `tbd_order_items.order_ID` | `tb_orders.ID` | `fk_order_item_order` | pedido 0..N líneas | NOT NULL; DELETE CASCADE | Detalle |
+| `tbd_products_categories.category_ID` | `tbc_categories.ID` | `fk_category` | categoría 0..N asociaciones | NOT NULL; acción predeterminada | Puente categorías |
+| `tbd_products_categories.product_ID` | `tb_products.ID` | `fk_product` | producto 0..N asociaciones | NOT NULL; acción predeterminada | Puente categorías |
+| `tbd_products_users_providers.product_ID` | `tb_products.ID` | `fk_products2` | producto 0..N usuarios comerciales | NOT NULL; acción predeterminada | Roles Owner/Seller/Distributor |
+| `tbd_products_users_providers.user_ID` | `tb_users.ID` | `fk_user1` | usuario 0..N productos | NOT NULL; acción predeterminada | Roles comerciales |
+| `tbd_wishlist_products.product_ID` | `tb_products.ID` | `fk_wishlist_product` | producto 0..N wishlist | NOT NULL; acción predeterminada | Favoritos |
+| `tbd_wishlist_products.user_ID` | `tb_users.ID` | `fk_wishlist_user` | usuario 0..N wishlist | NOT NULL; acción predeterminada | Favoritos |
+
+No hay FK declarada para `tbd_order_items.product_offer_ID`, aunque existe índice llamado `fk_order_item_offer`; tampoco para columnas `tb_payments.user_payment_method_ID`, campos de `tbd_users_wishlist_products` ni `tbh_trazabilidad_productos`. No deben representarse como relaciones confirmadas.
+
+```mermaid
+erDiagram
+  tb_users ||--o| tb_carts : fk_cart_user
+  tb_users ||--o{ tb_orders : fk_order_user
+  tb_carts o|--o{ tb_orders : fk_order_cart
+  tb_orders ||--o{ tb_payments : fk_payment_order
+  tb_payment_methods ||--o{ tb_payments : fk_payment_method
+  tb_orders ||--o{ tbd_order_items : fk_order_item_order
+  tb_products ||--o{ tbd_products_categories : fk_product
+  tbc_categories ||--o{ tbd_products_categories : fk_category
+  tb_users ||--o{ tbd_products_users_providers : fk_user1
+  tb_products ||--o{ tbd_products_users_providers : fk_products2
+  tb_users ||--o{ tbd_wishlist_products : fk_wishlist_user
+  tb_products ||--o{ tbd_wishlist_products : fk_wishlist_product
+  tbc_categories o|--o{ tbc_categories : fk_superior_category
+```
+
+Puentes muchos-a-muchos confirmados: producto-categoría; usuario-producto comercial; usuario-producto wishlist simple. `tbd_order_items` conecta pedido con oferta en su clave, pero el lado oferta carece de FK real. La wishlist de estado parece representar otra relación M:N, sin integridad referencial declarada.
+
+## 7. Diccionario de tablas y columnas
 
 En las tablas siguientes, “—” en clave significa que no se declara clave/indexación para ese campo individual. `NULL`/`NOT NULL`, tipo y default reproducen la definición. En “Ejemplo” se usan valores ficticios. Una FK se declara sólo donde el SQL la contiene.
 
@@ -229,63 +318,40 @@ Estructura especializada para registrar cambios por producto/usuario en JSON. El
 | detalle_cambio | Detalle | json | Auditoría estructurada | Valores/cambios serializados | — | NULL | NULL | — | JSON | {"status_old":1,"status_new":0} | El campo admite valores anteriores/nuevos si quien escribe los incluye |
 | fecha_registro | Fecha | datetime | Fecha/auditoría | Momento de registro | — | NOT NULL | CURRENT_TIMESTAMP | automática | — | 2026-02-01 10:00:00 | — |
 
-## 4. Relaciones y modelo entidad-relación
+## 8. Claves, indices y restricciones
 
-### Relaciones declaradas por FK
+Las fichas y el inventario enumeran las restricciones. Hay 14 PK (9 simples y 5 compuestas), 13 FK, 7 UNIQUE secundarios, 14 índices secundarios no únicos y 4 CHECK. Las cinco PK compuestas pertenecen a `tbd_order_items`, `tbd_products_categories`, `tbd_products_users_providers`, `tbd_users_wishlist_products` y `tbd_wishlist_products`.
 
-| Origen | Destino | Restricción | Cardinalidad justificable | Nulabilidad y acción | Uso |
-|---|---|---|---|---|---|
-| `tb_carts.user_ID` | `tb_users.ID` | `fk_cart_user` | usuario 0..1 carrito; cada carrito 1 usuario (UNIQUE) | origen NOT NULL; sin acción explícita | Carrito de cuenta |
-| `tb_orders.cart_ID` | `tb_carts.ID` | `fk_order_cart` | carrito 0..N pedidos; pedido 0..1 carrito | nullable; DELETE SET NULL | Vincula origen del pedido |
-| `tb_orders.user_ID` | `tb_users.ID` | `fk_order_user` | usuario 0..N pedidos | NOT NULL; acción predeterminada RESTRICT/NO ACTION | Propietario del pedido |
-| `tb_payments.payment_method_ID` | `tb_payment_methods.ID` | `fk_payment_method` | método 0..N pagos | NOT NULL; acción predeterminada | Método usado |
-| `tb_payments.order_ID` | `tb_orders.ID` | `fk_payment_order` | pedido 0..N pagos | NOT NULL; acción predeterminada | Pago asociado |
-| `tbc_categories.sup_id_category` | `tbc_categories.ID` | `fk_superior_category` | padre 0..N hijas; hija 0..1 padre | nullable; acción predeterminada | Jerarquía |
-| `tbd_order_items.order_ID` | `tb_orders.ID` | `fk_order_item_order` | pedido 0..N líneas | NOT NULL; DELETE CASCADE | Detalle |
-| `tbd_products_categories.category_ID` | `tbc_categories.ID` | `fk_category` | categoría 0..N asociaciones | NOT NULL; acción predeterminada | Puente categorías |
-| `tbd_products_categories.product_ID` | `tb_products.ID` | `fk_product` | producto 0..N asociaciones | NOT NULL; acción predeterminada | Puente categorías |
-| `tbd_products_users_providers.product_ID` | `tb_products.ID` | `fk_products2` | producto 0..N usuarios comerciales | NOT NULL; acción predeterminada | Roles Owner/Seller/Distributor |
-| `tbd_products_users_providers.user_ID` | `tb_users.ID` | `fk_user1` | usuario 0..N productos | NOT NULL; acción predeterminada | Roles comerciales |
-| `tbd_wishlist_products.product_ID` | `tb_products.ID` | `fk_wishlist_product` | producto 0..N wishlist | NOT NULL; acción predeterminada | Favoritos |
-| `tbd_wishlist_products.user_ID` | `tb_users.ID` | `fk_wishlist_user` | usuario 0..N wishlist | NOT NULL; acción predeterminada | Favoritos |
+| Etiqueta | Lectura |
+|---|---|
+| `PK` | Clave primaria; identifica una fila |
+| `FK` | Clave foránea declarada; referencia otra clave |
+| `UNIQUE` | Índice único secundario |
+| `CHECK` | Restricción que valida una expresión |
+| `NULL` / `NOT NULL` | Nulabilidad permitida o prohibida |
 
-No hay FK declarada para `tbd_order_items.product_offer_ID`, aunque existe índice llamado `fk_order_item_offer`; tampoco para columnas `tb_payments.user_payment_method_ID`, campos de `tbd_users_wishlist_products` ni `tbh_trazabilidad_productos`. No deben representarse como relaciones confirmadas.
+Los CHECK son `chk_order_amounts`, `chk_payment_amount`, `chk_order_item_price` y `chk_order_item_quantity`. `line_total` es una columna generada STORED, no un CHECK. `fk_order_item_offer` es un índice, no una FK.
 
-```mermaid
-erDiagram
-  tb_users ||--o| tb_carts : fk_cart_user
-  tb_users ||--o{ tb_orders : fk_order_user
-  tb_carts o|--o{ tb_orders : fk_order_cart
-  tb_orders ||--o{ tb_payments : fk_payment_order
-  tb_payment_methods ||--o{ tb_payments : fk_payment_method
-  tb_orders ||--o{ tbd_order_items : fk_order_item_order
-  tb_products ||--o{ tbd_products_categories : fk_product
-  tbc_categories ||--o{ tbd_products_categories : fk_category
-  tb_users ||--o{ tbd_products_users_providers : fk_user1
-  tb_products ||--o{ tbd_products_users_providers : fk_products2
-  tb_users ||--o{ tbd_wishlist_products : fk_wishlist_user
-  tb_products ||--o{ tbd_wishlist_products : fk_wishlist_product
-  tbc_categories o|--o{ tbc_categories : fk_superior_category
-```
+## 9. Relaciones entre entidades
 
-Puentes muchos-a-muchos confirmados: producto-categoría; usuario-producto comercial; usuario-producto wishlist simple. `tbd_order_items` conecta pedido con oferta en su clave, pero el lado oferta carece de FK real. La wishlist de estado parece representar otra relación M:N, sin integridad referencial declarada.
+Las trece FKs y sus cardinalidades están documentadas en el modelo ER de la sección 6. Las relaciones inferidas por nombres (por ejemplo, `product_offer_ID`) están marcadas y no se dibujan como FKs confirmadas. El diagrama ER presenta únicamente las constraints declaradas.
 
-## 5. Vistas
+## 10. Vistas
 
 Se documentan las seis definiciones finales `CREATE OR REPLACE VIEW`. Antes aparecen placeholders de exportacion con `SELECT 1`; las consultas posteriores son las definiciones funcionales.
 
 | Vista | Definicion real y uso |
 |---|---|
-| `vw_total_products_by_category` | Categorias LEFT JOIN asociaciones producto-categoria activas (`status=1`), agrupa por categoria y cuenta `product_ID`. No filtra status del producto ni cuenta DISTINCT. |
-| `vw_trazabilidad_categorias` | Proyecta campos de `tb_logs` donde `table_name='tbc_categories'` y `operation_status=1`. Bitacora, no snapshot de categoria. |
-| `vw_trazabilidad_productos` | Proyecta log_id, operacion, usuario BD, descripcion, fecha y estado desde `tb_logs` para `tb_products`. |
-| `vw_trazabilidad_productos_categorias` | Proyecta campos de `tb_logs` para `tbd_products_categories`, filtrando estado 1. |
-| `vw_trazabilidad_proveedores` | LEFT JOIN asociacion proveedor con logs por tabla y `LIKE` de IDs en descripcion; salida combina datos del vinculo y evento. Matching fragil, puede duplicar/falsamente asociar filas. |
-| `vw_trazabilidad_usuarios` | Proyecta campos de `tb_logs` filtrados por tabla `tb_users` y status 1. |
+| `vw_total_products_by_category` | Origen: `tbc_categories` LEFT JOIN `tbd_products_categories`, con filtro del join `status=1`; agrupa por ID/nombre. Devuelve `category_id`, `category_name`, `total_products` (`COUNT(product_ID)`). No filtra el estado del producto ni cuenta DISTINCT. |
+| `vw_trazabilidad_categorias` | Origen: `tb_logs`; filtro `table_name='tbc_categories'` y `operation_status=1`. Devuelve `ID`, `table_name`, `operation`, `db_user`, `operation_description`, `operation_date`, `operation_status`. Es bitácora, no snapshot de categoría. |
+| `vw_trazabilidad_productos` | Origen: `tb_logs` como `l`; filtro `table_name='tb_products'`. Devuelve `log_id`, `operation`, `db_user`, `operation_description`, `operation_date`, `operation_status`. |
+| `vw_trazabilidad_productos_categorias` | Origen: `tb_logs`; filtro `table_name='tbd_products_categories'` y `operation_status=1`. Devuelve los mismos siete campos de bitácora que la vista de categorías. |
+| `vw_trazabilidad_proveedores` | Origen: `tbd_products_users_providers` LEFT JOIN `tb_logs`; salida: `producto_id`, `usuario_id`, `tipo_propiedad`, `estado_proveedor`, `fecha_disponible`, `fecha_creacion`, `ultima_actualizacion`, `log_id`, `tabla_afectada`, `operacion_tabla`, `tipo_operacion`, `usuario_bd`, `descripcion_log`, `fecha_evento`, `estado_log`. Une por tabla y `LIKE` textual de ambos IDs en descripción; puede asociar coincidencias parciales y multiplicar filas. |
+| `vw_trazabilidad_usuarios` | Origen: `tb_logs`; filtro `table_name='tb_users'` y `operation_status=1`. Devuelve `ID`, `table_name`, `operation`, `db_user`, `operation_description`, `operation_date`, `operation_status`. |
 
 No se definen vistas finales para pedidos o pagos en este respaldo. Todas son vistas no materializadas.
 
-## 6. Triggers, reglas automáticas y fallos
+## 11. Triggers
 
 Se declaran 15 triggers AFTER, tres por cada tabla de productos, usuarios, categorias, relaciones producto-categoria y relaciones de proveedores, para INSERT/UPDATE/DELETE. No hay triggers BEFORE.
 
@@ -303,7 +369,7 @@ Se declaran 15 triggers AFTER, tres por cada tabla de productos, usuarios, categ
 
 Los triggers escriben en `tb_logs` dentro de la transaccion. Las referencias a columnas inexistentes pueden impedir crear los triggers o causar error al ejecutarlos, segun validacion del servidor. `tbh_trazabilidad_productos` no es el destino de esos triggers. No hay reglas trigger de stock, pedido, pago o transicion de estado.
 
-## 7. Auditoría y trazabilidad
+## 12. Auditoria y trazabilidad
 
 `tb_logs` 
 Es una bitácora general DML con actor de base de datos aproximado, tabla/operación/fecha y descripción textual; no tiene FK a usuario o tabla, ni columnas OLD/NEW, ni JSON, ni correlación de transacción. En algunos triggers la descripción incluye atributos como nombre/nick; otros sólo clave. El propio contenido de los registros insertados en el dump se omite aquí por privacidad.
@@ -313,26 +379,25 @@ Está diseñada para asociar producto, usuario, tabla, acción, fecha y JSON opc
 
 La cobertura es parcial: cinco tablas tienen triggers. Carritos, pedidos, pagos, metodos, lineas, wishlists e historial no tienen triggers en este respaldo. En general el log no permite reconstruir filas borradas ni valores OLD/NEW; `db_user` tampoco identifica necesariamente a una persona.
 
-## 8. Reglas de negocio e integridad
+## 13. Reglas de negocio
 
 | Regla comprobable | Fuente | Alcance |
 |---|---|---|
 | Un usuario puede tener como máximo un carrito | UNIQUE `uk_cart_user` | `tb_carts` |
 | Producto SKU, correo, nick, nombre categoría, código método únicos | UNIQUE declarados | Cada catálogo indicado |
-| Las claves relacionadas deben existir | 13 FKs | Sólo relaciones enumeradas en §4 |
+| Las claves relacionadas deben existir | 13 FKs | Sólo relaciones declaradas en el modelo entidad-relación |
 | Borrar pedido elimina sus líneas | FK `fk_order_item_order` ON DELETE CASCADE | Detalle pedido |
 | Borrar carrito deja pedido sin carrito | FK `fk_order_cart` ON DELETE SET NULL | Cabecera pedido |
 | Cantidades de detalle >0 y precio unitario >=0 | CHECK | `tbd_order_items` |
 | Importes de pedido >=0 | CHECK | Componentes y total independientemente |
 | Importe pago >0 | CHECK | `tb_payments` |
 | Estados permitidos | ENUM | pedido, pago, rol comercial, acciones log/historial |
-| Total de línea = cantidad × precio | columna generada STORED | Detalle pedido |
-
-| Categoría activa se cuenta sólo si vínculo status=1 | Vista | Consulta de conteo |
+| Total de línea = cantidad × precio | Columna generada STORED | Detalle de pedido |
+| La vista cuenta asociaciones con estado 1 | Filtro de la vista | `vw_total_products_by_category` |
 
 **No implementado o no verificable:** cálculo/reconciliación de total pedido, impuestos/descuentos, consumo/reserva de stock, coherencia entre `current_stock` y `available_stock`, moneda permitida, control de transición de estados, autorización del usuario, un pago por pedido, existencia de método de pago del usuario, relación real de oferta-producto, unicidad de un tipo de vínculo usuario-producto por separado y retención de auditoría. Son recomendaciones/hipótesis, no reglas del SQL.
 
-## 9. Seguridad y privacidad
+## 14. Seguridad y privacidad
 
 - `tb_users.password` es `varchar(255)` NOT NULL; el SQL no muestra hash, sal, algoritmo ni política. La aplicación debe almacenar hashes robustos y nunca texto claro.
 - Email, nick y dirección de envío son datos personales. Las vistas de trazabilidad de carrito, wishlist, pedido, pago, proveedor y usuarios exponen correo y/o dirección; restringir SELECT por rol y evitar acceso general a vistas.
@@ -341,91 +406,19 @@ La cobertura es parcial: cinco tablas tienen triggers. Carritos, pedidos, pagos,
 - `DEFINER=root@localhost` en los triggers crea dependencia con cuenta privilegiada: usar un definidor de mínimos privilegios y verificar privilegios al migrar. El dump no define usuarios, grants ni roles; no se puede evaluar permisos efectivos.
 - `CREATE DATABASE` indica `DEFAULT ENCRYPTION='N'`; no describe cifrado de disco, backups o transporte. Gestionarlos en infraestructura.
 
-## 10. Indices y rendimiento
+## 15. Rendimiento
 
 Las PK y claves UNIQUE se describen en las fichas. Los indices secundarios incluyen dos indices redundantes sobre `tb_logs.operation_date`, indices de pedidos por usuario/estado/carrito, pagos por pedido/estado/metodo, y soporte de FKs en categorias, detalle y tablas puente. `tbd_order_items.product_offer_ID` tiene indice, no FK.
 
 Los indices declarados benefician joins y filtros por esas columnas. Los duplicados de fecha de logs elevan costo de escritura sin distinto prefijo util. La vista de proveedores busca IDs con `LIKE` de comodin inicial en descripciones textuales, operacion no indexable con B-tree convencional. Indices adicionales sobre historial por producto/fecha o usuario/fecha son recomendaciones sujetas a consultas y volumen reales.
 
-## 11. Normalización y calidad
+## 16. Normalizacion y calidad
 
 Las entidades usuario, producto, categoría, pedido, pago y método tienen identificadores y atributos propios, compatible en principio con 1FN (campos atómicos salvo JSON deliberado). Las tablas puente separan relaciones M:N; las PK compuestas impiden duplicados del par. `line_total` es derivado pero se declara como columna generada, evitando discrepancia manual. En `tb_orders`, valores agregados coexisten con líneas, de modo que existe duplicación potencial de importes y requiere consistencia de aplicación no declarada.
 
 No se puede certificar 2FN/3FN global sin dependencias funcionales de negocio. Campos de tablas con PK simple dependen aparentemente de esa clave; en puente la PK compuesta permite dependencias del par. Posibles problemas: dos tablas de wishlist con el mismo concepto y políticas incompatibles; índice llamado FK sin constraint en detalle; relación de método guardado huérfana; historial sin FKs; log textual no estructurado; denominaciones mixtas; estado `BIT` nullable en producto; definiciones de timestamps inconsistentes; `tbd_products_users_providers` combina roles en una sola relación y su PK no permite tipos múltiples por pareja. Conservar el esquema original y planificar migraciones explícitas con limpieza y validación.
 
-## 12. Glosario y mantenimiento
-
-| Término | Uso en este esquema |
-|---|---|
-| Producto | Artículo de catálogo en `tb_products`, con SKU, precio y stock |
-| Categoría | Clasificación jerárquica de producto en `tbc_categories` |
-| Oferta | No existe entidad de oferta en este respaldo; `product_offer_ID` carece de destino confirmable |
-| Propietario/vendedor/distribuidor | Valores de `type_ownership` para vínculo usuario-producto |
-| Carrito | Registro único por usuario, sin líneas explícitas en el esquema |
-| Pedido | Cabecera de compra con importes/estado y usuario |
-| Detalle de pedido | Linea identificada por pedido y `product_offer_ID`, sin FK a oferta |
-| Método de pago | Catálogo habilitable (`tb_payment_methods`) |
-| Pago | Operación/intentó asociada a pedido y método |
-| Lista de deseos | Dos modelos paralelos de asociación usuario-producto |
-| Bitácora | `tb_logs`, registro textual de operaciones generales |
-| Trazabilidad | Historial estructurado planeado en `tbh_trazabilidad_productos`; vistas homónimas muestran estado actual o logs |
-
-Para mantenimiento: usar nombres consistentes (singular/plural, idioma y casing), documentar cambios y migraciones, mantener constraints/FKs alineados con las relaciones efectivas, definir ciclo de vida de estados, validar triggers en una instancia MySQL compatible, no utilizar root como definidor de producción, y revisar vistas con PII/permisos. Antes de confiar en la auditoría, corregir formalmente el desacuerdo entre triggers de proveedor y columnas de bitácora/historial.
-
-## 13. Matriz de cobertura
-
-### Tablas y campos
-
-| Tabla | Estado | Campos incluidos |
-|---|---|---|
-| `tb_users` | Documentado | ID, email, nick, password, creation_date, last_update, last_login, status |
-| `tb_products` | Documentado | ID, SKU, name, description, current_price, current_stock, status, creation_date, last_update |
-| `tbc_categories` | Documentado | ID, name, description, sup_id_category, status, creation_date, last_update |
-| `tb_carts` | Documentado | ID, user_ID, creation_date, last_update |
-| `tb_orders` | Documentado | ID, user_ID, cart_ID, order_status, subtotal, tax_amount, shipping_amount, discount_amount, total_amount, currency, shipping_address, creation_date, last_update |
-| `tbd_order_items` | Documentado | order_ID, product_offer_ID, quantity, unit_price, line_total, creation_date |
-| `tb_payment_methods` | Documentado | ID, code, name, status, creation_date |
-| `tb_payments` | Documentado | ID, order_ID, payment_method_ID, user_payment_method_ID, amount, currency, payment_status, transaction_reference, failure_reason, paid_date, creation_date, last_update |
-| `tbd_products_categories` | Documentado | category_ID, product_ID, status, creation_date, last_update |
-| `tbd_products_users_providers` | Documentado | user_ID, product_ID, type_ownership, status, available_date, creation_date, last_update |
-| `tbd_users_wishlist_products` | Documentado | user_id, product_id, is_active, created_date, updated_date |
-| `tbd_wishlist_products` | Documentado | user_ID, product_ID, creation_date |
-| `tb_logs` | Documentado | ID, table_name, table_operation, operation, db_user, operation_description, operation_date, operation_status |
-| `tbh_trazabilidad_productos` | Documentado | id, tabla_afectada, producto_id, usuario_id, accion, detalle_cambio, fecha_registro |
-
-### Vistas y claves foráneas
-
-| Objeto | Estado |
-|---|---|
-| `vw_total_products_by_category` | Documentado |
-| `vw_trazabilidad_categorias` | Documentado |
-| `vw_trazabilidad_productos` | Documentado |
-| `vw_trazabilidad_productos_categorias` | Documentado |
-| `vw_trazabilidad_proveedores` | Documentado |
-| `vw_trazabilidad_usuarios` | Documentado |
-| 13 claves foráneas enumeradas en seccion 4 | Documentadas |
-
-### Triggers
-
-| Nombre | Estado |
-|---|---|
-| `trg_tb_products_after_insert` | Documentado |
-| `trg_tb_products_after_update` | Documentado |
-| `trg_tb_products_after_delete` | Documentado |
-| `trg_tb_users_after_insert` | Documentado |
-| `trg_tb_users_after_update` | Documentado |
-| `trg_tb_users_after_delete` | Documentado |
-| `trg_tbc_categories_after_insert` | Documentado |
-| `trg_tbc_categories_after_update` | Documentado |
-| `trg_tbc_categories_after_delete` | Documentado |
-| `trg_tbd_prod_cat_after_insert` | Documentado |
-| `trg_tbd_prod_cat_after_update` | Documentado |
-| `trg_tbd_prod_cat_after_delete` | Documentado |
-| `trg_after_insert_products_users_providers` | Documentado; columnas destino incompatibles |
-| `trg_after_update_products_users_providers` | Documentado; columnas destino incompatibles |
-| `trg_after_delete_products_users_providers` | Documentado; columnas destino incompatibles |
-
-## 15. Módulos, ciclo de vida y dependencias
+## 17. Modulos y dependencias
 
 | Módulo | Tablas | Función y limitación |
 |---|---|---|
@@ -469,7 +462,79 @@ No existe transicion obligatoria entre estados ni prueba de conversion automatic
 | `tbd_wishlist_products` | FKs a usuario y producto |
 | `tbd_users_wishlist_products`, `tbh_trazabilidad_productos` | Sin FKs declaradas |
 
-## 16. Dominios, muestras y cobertura
+## 18. Glosario
+
+| Término | Uso en este esquema |
+|---|---|
+| Producto | Artículo de catálogo en `tb_products`, con SKU, precio y stock |
+| Categoría | Clasificación jerárquica de producto en `tbc_categories` |
+| Oferta | No existe entidad de oferta en este respaldo; `product_offer_ID` carece de destino confirmable |
+| Propietario/vendedor/distribuidor | Valores de `type_ownership` para vínculo usuario-producto |
+| Carrito | Registro único por usuario, sin líneas explícitas en el esquema |
+| Pedido | Cabecera de compra con importes/estado y usuario |
+| Detalle de pedido | Linea identificada por pedido y `product_offer_ID`, sin FK a oferta |
+| Método de pago | Catálogo habilitable (`tb_payment_methods`) |
+| Pago | Operación/intentó asociada a pedido y método |
+| Lista de deseos | Dos modelos paralelos de asociación usuario-producto |
+| Bitácora | `tb_logs`, registro textual de operaciones generales |
+| Trazabilidad | Historial estructurado planeado en `tbh_trazabilidad_productos`; vistas homónimas muestran estado actual o logs |
+
+Para mantenimiento: usar nombres consistentes (singular/plural, idioma y casing), documentar cambios y migraciones, mantener constraints/FKs alineados con las relaciones efectivas, definir ciclo de vida de estados, validar triggers en una instancia MySQL compatible, no utilizar root como definidor de producción, y revisar vistas con PII/permisos. Antes de confiar en la auditoría, corregir formalmente el desacuerdo entre triggers de proveedor y columnas de bitácora/historial.
+
+## 19. Matriz de cobertura
+
+### Tablas y campos
+
+| Tabla | Estado | Campos incluidos |
+|---|---|---|
+| `tb_users` | Documentado | ID, email, nick, password, creation_date, last_update, last_login, status |
+| `tb_products` | Documentado | ID, SKU, name, description, current_price, current_stock, status, creation_date, last_update |
+| `tbc_categories` | Documentado | ID, name, description, sup_id_category, status, creation_date, last_update |
+| `tb_carts` | Documentado | ID, user_ID, creation_date, last_update |
+| `tb_orders` | Documentado | ID, user_ID, cart_ID, order_status, subtotal, tax_amount, shipping_amount, discount_amount, total_amount, currency, shipping_address, creation_date, last_update |
+| `tbd_order_items` | Documentado | order_ID, product_offer_ID, quantity, unit_price, line_total, creation_date |
+| `tb_payment_methods` | Documentado | ID, code, name, status, creation_date |
+| `tb_payments` | Documentado | ID, order_ID, payment_method_ID, user_payment_method_ID, amount, currency, payment_status, transaction_reference, failure_reason, paid_date, creation_date, last_update |
+| `tbd_products_categories` | Documentado | category_ID, product_ID, status, creation_date, last_update |
+| `tbd_products_users_providers` | Documentado | user_ID, product_ID, type_ownership, status, available_date, creation_date, last_update |
+| `tbd_users_wishlist_products` | Documentado | user_id, product_id, is_active, created_date, updated_date |
+| `tbd_wishlist_products` | Documentado | user_ID, product_ID, creation_date |
+| `tb_logs` | Documentado | ID, table_name, table_operation, operation, db_user, operation_description, operation_date, operation_status |
+| `tbh_trazabilidad_productos` | Documentado | id, tabla_afectada, producto_id, usuario_id, accion, detalle_cambio, fecha_registro |
+
+### Vistas y claves foráneas
+
+| Objeto | Estado |
+|---|---|
+| `vw_total_products_by_category` | Documentado |
+| `vw_trazabilidad_categorias` | Documentado |
+| `vw_trazabilidad_productos` | Documentado |
+| `vw_trazabilidad_productos_categorias` | Documentado |
+| `vw_trazabilidad_proveedores` | Documentado |
+| `vw_trazabilidad_usuarios` | Documentado |
+| 13 claves foráneas enumeradas en seccion 4 | Documentadas |
+
+### Triggers
+
+| Trigger | Cobertura |
+|---|---|
+| `trg_tb_products_after_insert` | Documentado |
+| `trg_tb_products_after_update` | Documentado |
+| `trg_tb_products_after_delete` | Documentado |
+| `trg_tb_users_after_insert` | Documentado |
+| `trg_tb_users_after_update` | Documentado |
+| `trg_tb_users_after_delete` | Documentado |
+| `trg_tbc_categories_after_insert` | Documentado |
+| `trg_tbc_categories_after_update` | Documentado |
+| `trg_tbc_categories_after_delete` | Documentado |
+| `trg_tbd_prod_cat_after_insert` | Documentado |
+| `trg_tbd_prod_cat_after_update` | Documentado |
+| `trg_tbd_prod_cat_after_delete` | Documentado |
+| `trg_after_insert_products_users_providers` | Documentado; columnas destino incompatibles |
+| `trg_after_update_products_users_providers` | Documentado; columnas destino incompatibles |
+| `trg_after_delete_products_users_providers` | Documentado; columnas destino incompatibles |
+
+
 
 ENUM de pedido: `pending`, `paid`, `processing`, `shipped`, `delivered`, `cancelled`, `refunded`. ENUM de pago: `pending`, `authorized`, `completed`, `failed`, `refunded`, `cancelled`. Propiedad: `Owner`, `Seller`, `Distributor`. Acciones: DML `INSERT/UPDATE/DELETE`; log logico `Create/Read/Update/Delete`. No hay reglas de transicion. Los campos BIT sugieren indicadores, pero la semantica exacta no siempre esta declarada. Moneda CHAR(3) no valida catalogo ISO.
 
@@ -481,13 +546,14 @@ Hay registros `INSERT` en el respaldo; se excluyen valores de personas. Ejemplos
 | Columnas | 99 | 99 | 100% |
 | Claves primarias | 14 | 14 | 100% |
 | Claves foráneas | 13 | 13 | 100% |
-| Vistas finales | 16 | 16 | 100% |
-| Triggers | 56 | 56 | 100% |
-| Procedimientos/funciones/eventos | 0 | 0 | N/A | No aparecen en dump |
+| Índices declarados | 35 | 35 | 100% |
+| Vistas finales | 6 | 6 | 100% |
+| Triggers | 15 | 15 | 100% |
+| Procedimientos/funciones/eventos | 0 | 0 | N/A |
 | CHECK | 4 | 4 | 100% |
 
 Requieren revision externa: grants, importacion efectiva de triggers proveedores, estado de vistas en servidor, codigo de aplicacion, hash de contrasenas, retencion de logs, pagos externos y estadisticas de rendimiento.
 
-## 17. Conclusiones y recomendaciones
+## 20. Conclusiones y recomendaciones
 
 El esquema representa de forma consistente el núcleo de comercio electrónico y sus áreas de cuenta, catálogo, oferta, pedido, pago y auditoría, con las limitaciones declarativas descritas. Antes de usarlo como contrato operativo, conviene resolver la duplicidad de wishlists, formalizar FKs de ofertas y métodos de usuario, corregir los triggers de proveedores, evitar claves/estados no validados en UPDATE, definir cálculo y reconciliación de totales/stock, consolidar índices redundantes, minimizar PII en vistas/logs y aplicar controles de acceso/retención. Estas acciones son recomendaciones; no alteran la descripción del SQL fuente.
