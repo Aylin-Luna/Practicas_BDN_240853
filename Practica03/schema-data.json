@@ -1,0 +1,1276 @@
+{
+  "database": "db_test",
+  "tables": [
+    {
+      "name": "tb_carts",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "int unsigned",
+          "attributes": [
+            "NOT NULL",
+            "AUTO_INCREMENT"
+          ]
+        },
+        {
+          "name": "user_ID",
+          "type": "int",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT CURRENT_TIMESTAMP"
+          ]
+        },
+        {
+          "name": "last_update",
+          "type": "datetime",
+          "attributes": [
+            "NULL",
+            "DEFAULT NULL"
+          ]
+        }
+      ],
+      "primaryKey": [
+        "ID"
+      ],
+      "foreignKeys": [
+        {
+          "name": "fk_cart_user",
+          "columns": [
+            "user_ID"
+          ],
+          "refTable": "tb_users",
+          "refColumns": [
+            "ID"
+          ],
+          "definition": "CONSTRAINT `fk_cart_user` FOREIGN KEY (`user_ID`) REFERENCES `tb_users` (`ID`)"
+        }
+      ],
+      "uniqueConstraints": [
+        {
+          "name": "uk_cart_user",
+          "columns": [
+            "user_ID"
+          ]
+        }
+      ],
+      "checks": [],
+      "indexes": [],
+      "constraints": [
+        "PRIMARY KEY (`ID`)",
+        "UNIQUE KEY `uk_cart_user` (`user_ID`)",
+        "CONSTRAINT `fk_cart_user` FOREIGN KEY (`user_ID`) REFERENCES `tb_users` (`ID`)"
+      ],
+      "rows": 0
+    },
+    {
+      "name": "tb_logs",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "int",
+          "attributes": [
+            "NOT NULL",
+            "AUTO_INCREMENT"
+          ]
+        },
+        {
+          "name": "table_name",
+          "type": "varchar(100)",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "table_operation",
+          "type": "enum('INSERT','UPDATE','DELETE')",
+          "attributes": [
+            "NULL",
+            "DEFAULT NULL"
+          ]
+        },
+        {
+          "name": "operation",
+          "type": "enum('Create','Read','Update','Delete')",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "db_user",
+          "type": "varchar(80)",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "operation_description",
+          "type": "text",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "operation_date",
+          "type": "datetime",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT CURRENT_TIMESTAMP"
+          ]
+        },
+        {
+          "name": "operation_status",
+          "type": "bit(1)",
+          "attributes": [
+            "DEFAULT b'1'"
+          ]
+        }
+      ],
+      "primaryKey": [
+        "ID"
+      ],
+      "foreignKeys": [],
+      "uniqueConstraints": [],
+      "checks": [],
+      "indexes": [
+        "KEY `idx_logs_operation_date` (`operation_date`)",
+        "KEY `idx_tb_logs_operation_date` (`operation_date`)"
+      ],
+      "constraints": [
+        "PRIMARY KEY (`ID`)",
+        "KEY `idx_logs_operation_date` (`operation_date`)",
+        "KEY `idx_tb_logs_operation_date` (`operation_date`)"
+      ],
+      "rows": 15111
+    },
+    {
+      "name": "tb_orders",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "int unsigned",
+          "attributes": [
+            "NOT NULL",
+            "AUTO_INCREMENT"
+          ]
+        },
+        {
+          "name": "user_ID",
+          "type": "int",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "cart_ID",
+          "type": "int unsigned",
+          "attributes": [
+            "NULL",
+            "DEFAULT NULL"
+          ]
+        },
+        {
+          "name": "order_status",
+          "type": "enum('pending','paid','processing','shipped','delivered','cancelled','refunded')",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT 'pending'"
+          ]
+        },
+        {
+          "name": "subtotal",
+          "type": "decimal(12,2)",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT '0.00'"
+          ]
+        },
+        {
+          "name": "tax_amount",
+          "type": "decimal(12,2)",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT '0.00'"
+          ]
+        },
+        {
+          "name": "shipping_amount",
+          "type": "decimal(12,2)",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT '0.00'"
+          ]
+        },
+        {
+          "name": "discount_amount",
+          "type": "decimal(12,2)",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT '0.00'"
+          ]
+        },
+        {
+          "name": "total_amount",
+          "type": "decimal(12,2)",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT '0.00'"
+          ]
+        },
+        {
+          "name": "currency",
+          "type": "char(3)",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT 'MXN'"
+          ]
+        },
+        {
+          "name": "shipping_address",
+          "type": "varchar(500)",
+          "attributes": [
+            "NULL",
+            "DEFAULT NULL"
+          ]
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT CURRENT_TIMESTAMP"
+          ]
+        },
+        {
+          "name": "last_update",
+          "type": "datetime",
+          "attributes": [
+            "NULL",
+            "DEFAULT NULL"
+          ]
+        }
+      ],
+      "primaryKey": [
+        "ID"
+      ],
+      "foreignKeys": [
+        {
+          "name": "fk_order_cart",
+          "columns": [
+            "cart_ID"
+          ],
+          "refTable": "tb_carts",
+          "refColumns": [
+            "ID"
+          ],
+          "definition": "CONSTRAINT `fk_order_cart` FOREIGN KEY (`cart_ID`) REFERENCES `tb_carts` (`ID`) ON DELETE SET NULL"
+        },
+        {
+          "name": "fk_order_user",
+          "columns": [
+            "user_ID"
+          ],
+          "refTable": "tb_users",
+          "refColumns": [
+            "ID"
+          ],
+          "definition": "CONSTRAINT `fk_order_user` FOREIGN KEY (`user_ID`) REFERENCES `tb_users` (`ID`)"
+        }
+      ],
+      "uniqueConstraints": [],
+      "checks": [
+        "CONSTRAINT `chk_order_amounts` CHECK (((`subtotal` >= 0) and (`tax_amount` >= 0) and (`shipping_amount` >= 0) and (`discount_amount` >= 0) and (`total_amount` >= 0)))"
+      ],
+      "indexes": [
+        "KEY `idx_order_user` (`user_ID`)",
+        "KEY `idx_order_status` (`order_status`)",
+        "KEY `fk_order_cart` (`cart_ID`)"
+      ],
+      "constraints": [
+        "PRIMARY KEY (`ID`)",
+        "KEY `idx_order_user` (`user_ID`)",
+        "KEY `idx_order_status` (`order_status`)",
+        "KEY `fk_order_cart` (`cart_ID`)",
+        "CONSTRAINT `fk_order_cart` FOREIGN KEY (`cart_ID`) REFERENCES `tb_carts` (`ID`) ON DELETE SET NULL",
+        "CONSTRAINT `fk_order_user` FOREIGN KEY (`user_ID`) REFERENCES `tb_users` (`ID`)",
+        "CONSTRAINT `chk_order_amounts` CHECK (((`subtotal` >= 0) and (`tax_amount` >= 0) and (`shipping_amount` >= 0) and (`discount_amount` >= 0) and (`total_amount` >= 0)))"
+      ],
+      "rows": 0
+    },
+    {
+      "name": "tb_payment_methods",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "int unsigned",
+          "attributes": [
+            "NOT NULL",
+            "AUTO_INCREMENT"
+          ]
+        },
+        {
+          "name": "code",
+          "type": "varchar(30)",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "name",
+          "type": "varchar(80)",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "status",
+          "type": "bit(1)",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT b'1'"
+          ]
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT CURRENT_TIMESTAMP"
+          ]
+        }
+      ],
+      "primaryKey": [
+        "ID"
+      ],
+      "foreignKeys": [],
+      "uniqueConstraints": [
+        {
+          "name": "uq_payment_method_code",
+          "columns": [
+            "code"
+          ]
+        }
+      ],
+      "checks": [],
+      "indexes": [],
+      "constraints": [
+        "PRIMARY KEY (`ID`)",
+        "UNIQUE KEY `uq_payment_method_code` (`code`)"
+      ],
+      "rows": 5
+    },
+    {
+      "name": "tb_payments",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "int unsigned",
+          "attributes": [
+            "NOT NULL",
+            "AUTO_INCREMENT"
+          ]
+        },
+        {
+          "name": "order_ID",
+          "type": "int unsigned",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "payment_method_ID",
+          "type": "int unsigned",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "user_payment_method_ID",
+          "type": "int unsigned",
+          "attributes": [
+            "NULL",
+            "DEFAULT NULL"
+          ]
+        },
+        {
+          "name": "amount",
+          "type": "decimal(12,2)",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "currency",
+          "type": "char(3)",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT 'MXN'"
+          ]
+        },
+        {
+          "name": "payment_status",
+          "type": "enum('pending','authorized','completed','failed','refunded','cancelled')",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT 'pending'"
+          ]
+        },
+        {
+          "name": "transaction_reference",
+          "type": "varchar(100)",
+          "attributes": [
+            "NULL",
+            "DEFAULT NULL"
+          ]
+        },
+        {
+          "name": "failure_reason",
+          "type": "varchar(255)",
+          "attributes": [
+            "NULL",
+            "DEFAULT NULL"
+          ]
+        },
+        {
+          "name": "paid_date",
+          "type": "datetime",
+          "attributes": [
+            "NULL",
+            "DEFAULT NULL"
+          ]
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT CURRENT_TIMESTAMP"
+          ]
+        },
+        {
+          "name": "last_update",
+          "type": "datetime",
+          "attributes": [
+            "NULL",
+            "DEFAULT NULL"
+          ]
+        }
+      ],
+      "primaryKey": [
+        "ID"
+      ],
+      "foreignKeys": [
+        {
+          "name": "fk_payment_method",
+          "columns": [
+            "payment_method_ID"
+          ],
+          "refTable": "tb_payment_methods",
+          "refColumns": [
+            "ID"
+          ],
+          "definition": "CONSTRAINT `fk_payment_method` FOREIGN KEY (`payment_method_ID`) REFERENCES `tb_payment_methods` (`ID`)"
+        },
+        {
+          "name": "fk_payment_order",
+          "columns": [
+            "order_ID"
+          ],
+          "refTable": "tb_orders",
+          "refColumns": [
+            "ID"
+          ],
+          "definition": "CONSTRAINT `fk_payment_order` FOREIGN KEY (`order_ID`) REFERENCES `tb_orders` (`ID`)"
+        }
+      ],
+      "uniqueConstraints": [
+        {
+          "name": "uq_payment_reference",
+          "columns": [
+            "transaction_reference"
+          ]
+        }
+      ],
+      "checks": [
+        "CONSTRAINT `chk_payment_amount` CHECK ((`amount` > 0))"
+      ],
+      "indexes": [
+        "KEY `idx_payment_order` (`order_ID`)",
+        "KEY `idx_payment_status` (`payment_status`)",
+        "KEY `fk_payment_method` (`payment_method_ID`)",
+        "KEY `fk_payment_user_method` (`user_payment_method_ID`)"
+      ],
+      "constraints": [
+        "PRIMARY KEY (`ID`)",
+        "UNIQUE KEY `uq_payment_reference` (`transaction_reference`)",
+        "KEY `idx_payment_order` (`order_ID`)",
+        "KEY `idx_payment_status` (`payment_status`)",
+        "KEY `fk_payment_method` (`payment_method_ID`)",
+        "KEY `fk_payment_user_method` (`user_payment_method_ID`)",
+        "CONSTRAINT `fk_payment_method` FOREIGN KEY (`payment_method_ID`) REFERENCES `tb_payment_methods` (`ID`)",
+        "CONSTRAINT `fk_payment_order` FOREIGN KEY (`order_ID`) REFERENCES `tb_orders` (`ID`)",
+        "CONSTRAINT `chk_payment_amount` CHECK ((`amount` > 0))"
+      ],
+      "rows": 0
+    },
+    {
+      "name": "tb_products",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "int unsigned",
+          "attributes": [
+            "NOT NULL",
+            "AUTO_INCREMENT"
+          ]
+        },
+        {
+          "name": "SKU",
+          "type": "varchar(50)",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "name",
+          "type": "varchar(250)",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "attributes": []
+        },
+        {
+          "name": "current_price",
+          "type": "decimal(10,2)",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT '0.00'"
+          ]
+        },
+        {
+          "name": "current_stock",
+          "type": "int unsigned",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT '0'"
+          ]
+        },
+        {
+          "name": "status",
+          "type": "bit(1)",
+          "attributes": [
+            "DEFAULT b'1'"
+          ]
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT CURRENT_TIMESTAMP"
+          ]
+        },
+        {
+          "name": "last_update",
+          "type": "datetime",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT CURRENT_TIMESTAMP"
+          ]
+        }
+      ],
+      "primaryKey": [
+        "ID"
+      ],
+      "foreignKeys": [],
+      "uniqueConstraints": [
+        {
+          "name": "SKU",
+          "columns": [
+            "SKU"
+          ]
+        }
+      ],
+      "checks": [],
+      "indexes": [],
+      "constraints": [
+        "PRIMARY KEY (`ID`)",
+        "UNIQUE KEY `SKU` (`SKU`)"
+      ],
+      "rows": 15000
+    },
+    {
+      "name": "tb_users",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "int",
+          "attributes": [
+            "NOT NULL",
+            "AUTO_INCREMENT"
+          ]
+        },
+        {
+          "name": "email",
+          "type": "varchar(80)",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "nick",
+          "type": "varchar(100)",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "password",
+          "type": "varchar(255)",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT CURRENT_TIMESTAMP"
+          ]
+        },
+        {
+          "name": "last_update",
+          "type": "datetime",
+          "attributes": [
+            "NULL",
+            "DEFAULT NULL"
+          ]
+        },
+        {
+          "name": "last_login",
+          "type": "datetime",
+          "attributes": [
+            "NULL",
+            "DEFAULT NULL"
+          ]
+        },
+        {
+          "name": "status",
+          "type": "bit(1)",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT b'1'"
+          ]
+        }
+      ],
+      "primaryKey": [
+        "ID"
+      ],
+      "foreignKeys": [],
+      "uniqueConstraints": [
+        {
+          "name": "email",
+          "columns": [
+            "email"
+          ]
+        },
+        {
+          "name": "nickname",
+          "columns": [
+            "nick"
+          ]
+        }
+      ],
+      "checks": [],
+      "indexes": [],
+      "constraints": [
+        "PRIMARY KEY (`ID`)",
+        "UNIQUE KEY `email` (`email`)",
+        "UNIQUE KEY `nickname` (`nick`)"
+      ],
+      "rows": 7
+    },
+    {
+      "name": "tbc_categories",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "int unsigned",
+          "attributes": [
+            "NOT NULL",
+            "AUTO_INCREMENT"
+          ]
+        },
+        {
+          "name": "name",
+          "type": "varchar(120)",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "attributes": []
+        },
+        {
+          "name": "sup_id_category",
+          "type": "int unsigned",
+          "attributes": [
+            "NULL",
+            "DEFAULT NULL"
+          ]
+        },
+        {
+          "name": "status",
+          "type": "bit(1)",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT b'1'"
+          ]
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT CURRENT_TIMESTAMP"
+          ]
+        },
+        {
+          "name": "last_update",
+          "type": "datetime",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT CURRENT_TIMESTAMP"
+          ]
+        }
+      ],
+      "primaryKey": [
+        "ID"
+      ],
+      "foreignKeys": [
+        {
+          "name": "fk_superior_category",
+          "columns": [
+            "sup_id_category"
+          ],
+          "refTable": "tbc_categories",
+          "refColumns": [
+            "ID"
+          ],
+          "definition": "CONSTRAINT `fk_superior_category` FOREIGN KEY (`sup_id_category`) REFERENCES `tbc_categories` (`ID`)"
+        }
+      ],
+      "uniqueConstraints": [
+        {
+          "name": "name",
+          "columns": [
+            "name"
+          ]
+        }
+      ],
+      "checks": [],
+      "indexes": [
+        "KEY `fk_superior_category` (`sup_id_category`)"
+      ],
+      "constraints": [
+        "PRIMARY KEY (`ID`)",
+        "UNIQUE KEY `name` (`name`)",
+        "KEY `fk_superior_category` (`sup_id_category`)",
+        "CONSTRAINT `fk_superior_category` FOREIGN KEY (`sup_id_category`) REFERENCES `tbc_categories` (`ID`)"
+      ],
+      "rows": 100
+    },
+    {
+      "name": "tbd_order_items",
+      "columns": [
+        {
+          "name": "order_ID",
+          "type": "int unsigned",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "product_offer_ID",
+          "type": "int unsigned",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "quantity",
+          "type": "int unsigned",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT '1'"
+          ]
+        },
+        {
+          "name": "unit_price",
+          "type": "decimal(12,2)",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "line_total",
+          "type": "decimal(12,2)",
+          "attributes": []
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT CURRENT_TIMESTAMP"
+          ]
+        }
+      ],
+      "primaryKey": [
+        "order_ID",
+        "product_offer_ID"
+      ],
+      "foreignKeys": [
+        {
+          "name": "fk_order_item_order",
+          "columns": [
+            "order_ID"
+          ],
+          "refTable": "tb_orders",
+          "refColumns": [
+            "ID"
+          ],
+          "definition": "CONSTRAINT `fk_order_item_order` FOREIGN KEY (`order_ID`) REFERENCES `tb_orders` (`ID`) ON DELETE CASCADE"
+        }
+      ],
+      "uniqueConstraints": [],
+      "checks": [
+        "CONSTRAINT `chk_order_item_price` CHECK ((`unit_price` >= 0))",
+        "CONSTRAINT `chk_order_item_quantity` CHECK ((`quantity` > 0))"
+      ],
+      "indexes": [
+        "KEY `fk_order_item_offer` (`product_offer_ID`)"
+      ],
+      "constraints": [
+        "PRIMARY KEY (`order_ID`,`product_offer_ID`)",
+        "KEY `fk_order_item_offer` (`product_offer_ID`)",
+        "CONSTRAINT `fk_order_item_order` FOREIGN KEY (`order_ID`) REFERENCES `tb_orders` (`ID`) ON DELETE CASCADE",
+        "CONSTRAINT `chk_order_item_price` CHECK ((`unit_price` >= 0))",
+        "CONSTRAINT `chk_order_item_quantity` CHECK ((`quantity` > 0))"
+      ],
+      "rows": 0
+    },
+    {
+      "name": "tbd_products_categories",
+      "columns": [
+        {
+          "name": "category_ID",
+          "type": "int unsigned",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "product_ID",
+          "type": "int unsigned",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "status",
+          "type": "bit(1)",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT b'1'"
+          ]
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT CURRENT_TIMESTAMP"
+          ]
+        },
+        {
+          "name": "last_update",
+          "type": "datetime",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT CURRENT_TIMESTAMP"
+          ]
+        }
+      ],
+      "primaryKey": [
+        "category_ID",
+        "product_ID"
+      ],
+      "foreignKeys": [
+        {
+          "name": "fk_category",
+          "columns": [
+            "category_ID"
+          ],
+          "refTable": "tbc_categories",
+          "refColumns": [
+            "ID"
+          ],
+          "definition": "CONSTRAINT `fk_category` FOREIGN KEY (`category_ID`) REFERENCES `tbc_categories` (`ID`)"
+        },
+        {
+          "name": "fk_product",
+          "columns": [
+            "product_ID"
+          ],
+          "refTable": "tb_products",
+          "refColumns": [
+            "ID"
+          ],
+          "definition": "CONSTRAINT `fk_product` FOREIGN KEY (`product_ID`) REFERENCES `tb_products` (`ID`)"
+        }
+      ],
+      "uniqueConstraints": [],
+      "checks": [],
+      "indexes": [
+        "KEY `fk_product` (`product_ID`)"
+      ],
+      "constraints": [
+        "PRIMARY KEY (`category_ID`,`product_ID`)",
+        "KEY `fk_product` (`product_ID`)",
+        "CONSTRAINT `fk_category` FOREIGN KEY (`category_ID`) REFERENCES `tbc_categories` (`ID`)",
+        "CONSTRAINT `fk_product` FOREIGN KEY (`product_ID`) REFERENCES `tb_products` (`ID`)"
+      ],
+      "rows": 0
+    },
+    {
+      "name": "tbd_products_users_providers",
+      "columns": [
+        {
+          "name": "user_ID",
+          "type": "int",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "product_ID",
+          "type": "int unsigned",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "type_ownership",
+          "type": "enum('Owner','Seller','Distributor')",
+          "attributes": [
+            "NULL",
+            "DEFAULT NULL"
+          ]
+        },
+        {
+          "name": "status",
+          "type": "bit(1)",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT b'1'"
+          ]
+        },
+        {
+          "name": "available_date",
+          "type": "datetime",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT CURRENT_TIMESTAMP"
+          ]
+        },
+        {
+          "name": "last_update",
+          "type": "datetime",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT CURRENT_TIMESTAMP"
+          ]
+        }
+      ],
+      "primaryKey": [
+        "user_ID",
+        "product_ID"
+      ],
+      "foreignKeys": [
+        {
+          "name": "fk_products2",
+          "columns": [
+            "product_ID"
+          ],
+          "refTable": "tb_products",
+          "refColumns": [
+            "ID"
+          ],
+          "definition": "CONSTRAINT `fk_products2` FOREIGN KEY (`product_ID`) REFERENCES `tb_products` (`ID`)"
+        },
+        {
+          "name": "fk_user1",
+          "columns": [
+            "user_ID"
+          ],
+          "refTable": "tb_users",
+          "refColumns": [
+            "ID"
+          ],
+          "definition": "CONSTRAINT `fk_user1` FOREIGN KEY (`user_ID`) REFERENCES `tb_users` (`ID`)"
+        }
+      ],
+      "uniqueConstraints": [],
+      "checks": [],
+      "indexes": [
+        "KEY `fk_products2` (`product_ID`)"
+      ],
+      "constraints": [
+        "PRIMARY KEY (`user_ID`,`product_ID`)",
+        "KEY `fk_products2` (`product_ID`)",
+        "CONSTRAINT `fk_products2` FOREIGN KEY (`product_ID`) REFERENCES `tb_products` (`ID`)",
+        "CONSTRAINT `fk_user1` FOREIGN KEY (`user_ID`) REFERENCES `tb_users` (`ID`)"
+      ],
+      "rows": 0
+    },
+    {
+      "name": "tbd_users_wishlist_products",
+      "columns": [
+        {
+          "name": "user_id",
+          "type": "int unsigned",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "product_id",
+          "type": "int unsigned",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "is_active",
+          "type": "bit(1)",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT b'1'"
+          ]
+        },
+        {
+          "name": "created_date",
+          "type": "datetime",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT CURRENT_TIMESTAMP"
+          ]
+        },
+        {
+          "name": "updated_date",
+          "type": "datetime",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT CURRENT_TIMESTAMP"
+          ]
+        }
+      ],
+      "primaryKey": [
+        "user_id",
+        "product_id"
+      ],
+      "foreignKeys": [],
+      "uniqueConstraints": [],
+      "checks": [],
+      "indexes": [],
+      "constraints": [
+        "PRIMARY KEY (`user_id`,`product_id`)"
+      ],
+      "rows": 0
+    },
+    {
+      "name": "tbd_wishlist_products",
+      "columns": [
+        {
+          "name": "user_ID",
+          "type": "int",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "product_ID",
+          "type": "int unsigned",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "creation_date",
+          "type": "datetime",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT CURRENT_TIMESTAMP"
+          ]
+        }
+      ],
+      "primaryKey": [
+        "user_ID",
+        "product_ID"
+      ],
+      "foreignKeys": [
+        {
+          "name": "fk_wishlist_product",
+          "columns": [
+            "product_ID"
+          ],
+          "refTable": "tb_products",
+          "refColumns": [
+            "ID"
+          ],
+          "definition": "CONSTRAINT `fk_wishlist_product` FOREIGN KEY (`product_ID`) REFERENCES `tb_products` (`ID`)"
+        },
+        {
+          "name": "fk_wishlist_user",
+          "columns": [
+            "user_ID"
+          ],
+          "refTable": "tb_users",
+          "refColumns": [
+            "ID"
+          ],
+          "definition": "CONSTRAINT `fk_wishlist_user` FOREIGN KEY (`user_ID`) REFERENCES `tb_users` (`ID`)"
+        }
+      ],
+      "uniqueConstraints": [],
+      "checks": [],
+      "indexes": [
+        "KEY `fk_wishlist_product` (`product_ID`)"
+      ],
+      "constraints": [
+        "PRIMARY KEY (`user_ID`,`product_ID`)",
+        "KEY `fk_wishlist_product` (`product_ID`)",
+        "CONSTRAINT `fk_wishlist_product` FOREIGN KEY (`product_ID`) REFERENCES `tb_products` (`ID`)",
+        "CONSTRAINT `fk_wishlist_user` FOREIGN KEY (`user_ID`) REFERENCES `tb_users` (`ID`)"
+      ],
+      "rows": 0
+    },
+    {
+      "name": "tbh_trazabilidad_productos",
+      "columns": [
+        {
+          "name": "id",
+          "type": "int unsigned",
+          "attributes": [
+            "NOT NULL",
+            "AUTO_INCREMENT"
+          ]
+        },
+        {
+          "name": "tabla_afectada",
+          "type": "varchar(64)",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "producto_id",
+          "type": "int unsigned",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "usuario_id",
+          "type": "int unsigned",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "accion",
+          "type": "enum('INSERT','UPDATE','DELETE')",
+          "attributes": [
+            "NOT NULL"
+          ]
+        },
+        {
+          "name": "detalle_cambio",
+          "type": "json",
+          "attributes": [
+            "NULL",
+            "DEFAULT NULL"
+          ]
+        },
+        {
+          "name": "fecha_registro",
+          "type": "datetime",
+          "attributes": [
+            "NOT NULL",
+            "DEFAULT CURRENT_TIMESTAMP"
+          ]
+        }
+      ],
+      "primaryKey": [
+        "id"
+      ],
+      "foreignKeys": [],
+      "uniqueConstraints": [],
+      "checks": [],
+      "indexes": [],
+      "constraints": [
+        "PRIMARY KEY (`id`)"
+      ],
+      "rows": 0
+    }
+  ],
+  "views": [
+    {
+      "name": "vw_total_products_by_category",
+      "definition": "select `c`.`ID` AS `category_id`,`c`.`name` AS `category_name`,count(`pc`.`product_ID`) AS `total_products` from (`tbc_categories` `c` left join `tbd_products_categories` `pc` on(((`pc`.`category_ID` = `c`.`ID`) and (`pc`.`status` = 0x01)))) group by `c`.`ID`,`c`.`name`"
+    },
+    {
+      "name": "vw_trazabilidad_categorias",
+      "definition": "select `tb_logs`.`ID` AS `ID`,`tb_logs`.`table_name` AS `table_name`,`tb_logs`.`operation` AS `operation`,`tb_logs`.`db_user` AS `db_user`,`tb_logs`.`operation_description` AS `operation_description`,`tb_logs`.`operation_date` AS `operation_date`,`tb_logs`.`operation_status` AS `operation_status` from `tb_logs` where ((`tb_logs`.`table_name` = 'tbc_categories') and (`tb_logs`.`operation_status` = 0x01))"
+    },
+    {
+      "name": "vw_trazabilidad_productos",
+      "definition": "select `l`.`ID` AS `log_id`,`l`.`operation` AS `operation`,`l`.`db_user` AS `db_user`,`l`.`operation_description` AS `operation_description`,`l`.`operation_date` AS `operation_date`,`l`.`operation_status` AS `operation_status` from `tb_logs` `l` where (`l`.`table_name` = 'tb_products')"
+    },
+    {
+      "name": "vw_trazabilidad_productos_categorias",
+      "definition": "select `tb_logs`.`ID` AS `ID`,`tb_logs`.`table_name` AS `table_name`,`tb_logs`.`operation` AS `operation`,`tb_logs`.`db_user` AS `db_user`,`tb_logs`.`operation_description` AS `operation_description`,`tb_logs`.`operation_date` AS `operation_date`,`tb_logs`.`operation_status` AS `operation_status` from `tb_logs` where ((`tb_logs`.`table_name` = 'tbd_products_categories') and (`tb_logs`.`operation_status` = 0x01))"
+    },
+    {
+      "name": "vw_trazabilidad_proveedores",
+      "definition": "select `pup`.`product_ID` AS `producto_id`,`pup`.`user_ID` AS `usuario_id`,`pup`.`type_ownership` AS `tipo_propiedad`,`pup`.`status` AS `estado_proveedor`,`pup`.`available_date` AS `fecha_disponible`,`pup`.`creation_date` AS `fecha_creacion`,`pup`.`last_update` AS `ultima_actualizacion`,`l`.`ID` AS `log_id`,`l`.`table_name` AS `tabla_afectada`,`l`.`table_operation` AS `operacion_tabla`,`l`.`operation` AS `tipo_operacion`,`l`.`db_user` AS `usuario_bd`,`l`.`operation_description` AS `descripcion_log`,`l`.`operation_date` AS `fecha_evento`,`l`.`operation_status` AS `estado_log` from (`tbd_products_users_providers` `pup` left join `tb_logs` `l` on(((`l`.`table_name` = 'tbd_products_users_providers') and (`l`.`operation_description` like concat('%Producto ID: ',`pup`.`product_ID`,'%')) and (`l`.`operation_description` like concat('%Usuario ID: ',`pup`.`user_ID`,'%')))))"
+    },
+    {
+      "name": "vw_trazabilidad_usuarios",
+      "definition": "select `tb_logs`.`ID` AS `ID`,`tb_logs`.`table_name` AS `table_name`,`tb_logs`.`operation` AS `operation`,`tb_logs`.`db_user` AS `db_user`,`tb_logs`.`operation_description` AS `operation_description`,`tb_logs`.`operation_date` AS `operation_date`,`tb_logs`.`operation_status` AS `operation_status` from `tb_logs` where ((`tb_logs`.`table_name` = 'tb_users') and (`tb_logs`.`operation_status` = 0x01))"
+    }
+  ],
+  "totalRows": 30223,
+  "source": "backups/141026.sql"
+}
