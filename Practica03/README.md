@@ -1,9 +1,4 @@
-﻿Aquí tienes tu documento **completamente corregido y listo para copiar y pegar** en tu archivo `README.md`.
-
-Se removieron todas las comillas simples de las URLs, se corrigió el formato del enlace de clonación de Git y se ajustó la estructura para que GitHub lo renderice a la perfección:
-
-```markdown
-# Práctica 03: Manipulación de Datos, Relaciones, Procedimientos, Funciones y Eventos en Conexiones Remotas
+﻿# Práctica 03: Manipulación de Datos, Relaciones, Procedimientos, Funciones y Eventos en Conexiones Remotas
 ## Ing. en Tecnologías de la Información e Innovación Digital
 ### Docente: M.T.I Marco A. Ramírez Hernández
 Periodo: Septiembre - Diciembre 2026
