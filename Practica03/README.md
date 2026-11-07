@@ -14,8 +14,8 @@ En este proyecto se consolidan 25 tablas relacionales de un sistema de **E-Comme
 
 Consulta la documentación técnica interactiva del sistema desplegada a través de GitHub Pages:
 
-* 📖 **[Diccionario de Datos Interactivo (HTML)]([https://aylin-luna.github.io/Practicas_BDN_240853/](https://aylin-luna.github.io/Practicas_BDN_240853/))** *(Estructura detallada de 25 tablas, tipos de datos, restricciones y llaves PK/FK)*
-* 🗺️ **[Modelo Entidad-Relación Extendido (MERE / EER)]([https://aylin-luna.github.io/Practicas_BDN_240853/](https://aylin-luna.github.io/Practicas_BDN_240853/))** *(Diagrama relacional completo con la arquitectura lógica del E-Commerce)*
+* 📖 **[Diccionario de Datos Interactivo (HTML)]([https://aylin-luna.github.io/Practicas_BDN_240853/])** *(Estructura detallada de 25 tablas, tipos de datos, restricciones y llaves PK/FK)*
+* 🗺️ **[Modelo Entidad-Relación Extendido (MERE / EER)]([https://aylin-luna.github.io/Practicas_BDN_240853/])** *(Diagrama relacional completo con la arquitectura lógica del E-Commerce)*
 
 ---
 
@@ -49,7 +49,7 @@ Consulta la documentación técnica interactiva del sistema desplegada a través
 
 A continuación se presenta la arquitectura visual del sistema de E-Commerce (25 tablas):
 
-*Para explorar el diagrama navegable o consultar detalles de relaciones específicas, visita el [Modelo EER en GitHub Pages]([https://aylin-luna.github.io/Practicas_BDN_240853/](https://aylin-luna.github.io/Practicas_BDN_240853/)).*
+*Para explorar el diagrama navegable o consultar detalles de relaciones específicas, visita el [Modelo EER en GitHub Pages]([https://aylin-luna.github.io/Practicas_BDN_240853/]).*
 
 ---
 
@@ -92,7 +92,7 @@ El Diccionario de Datos ha sido compilado y exportado mediante **Archify** para 
 * Tipos de datos, longitudes, valores por defecto y nulabilidad.
 * Restricciones de integridad ($UNIQUE$, $CHECK$, dominios de estado binario).
 
-Accede a la versión interactiva completa en el [Diccionario de Datos en GitHub Pages]([https://aylin-luna.github.io/Practicas_BDN_240853/](https://aylin-luna.github.io/Practicas_BDN_240853/)).
+Accede a la versión interactiva completa en el [Diccionario de Datos en GitHub Pages](https://aylin-luna.github.io/Practicas_BDN_240853/).
 
 ---
 
@@ -102,7 +102,7 @@ Sigue estos pasos para desplegar la práctica en tu entorno MySQL remoto o local
 
 1. **Clonar el repositorio:**
 ```bash
-git clone [https://github.com/Aylin-Luna/Practicas_BDN_240853.git](https://github.com/Aylin-Luna/Practicas_BDN_240853.git)
+git clone [https://github.com/Aylin-Luna/Practicas_BDN_240853.git]
 cd Practicas_BDN_240853
 
 ```
