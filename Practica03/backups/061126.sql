@@ -1817,6 +1817,44 @@ CREATE TABLE `tbd_products_categories` (
 
 LOCK TABLES `tbd_products_categories` WRITE;
 /*!40000 ALTER TABLE `tbd_products_categories` DISABLE KEYS */;
+
+-- Asigna cada producto a una categoría existente según su nombre y descripción.
+-- El estado es determinista: 4 de cada 5 relaciones quedan activas (80%).
+INSERT IGNORE INTO `tbd_products_categories` (`category_ID`, `product_ID`, `status`)
+SELECT
+  CASE
+    WHEN CONCAT(' ', LOWER(p.`name`), ' ', LOWER(p.`description`), ' ') REGEXP ' (laptop|notebook|computadora|pc gamer|chromebook) ' THEN 41
+    WHEN CONCAT(' ', LOWER(p.`name`), ' ', LOWER(p.`description`), ' ') REGEXP ' (smartphone|celular|teléfono|telefono|iphone|móvil|movil) ' THEN 44
+    WHEN CONCAT(' ', LOWER(p.`name`), ' ', LOWER(p.`description`), ' ') REGEXP ' (audífono|audifono|headphone|headset|earbuds) ' THEN 46
+    WHEN CONCAT(' ', LOWER(p.`name`), ' ', LOWER(p.`description`), ' ') REGEXP ' (bocina|speaker|altavoz) ' THEN 47
+    WHEN CONCAT(' ', LOWER(p.`name`), ' ', LOWER(p.`description`), ' ') REGEXP ' (televisión|television|smart tv|pantalla|monitor) ' THEN 48
+    WHEN CONCAT(' ', LOWER(p.`name`), ' ', LOWER(p.`description`), ' ') REGEXP ' (teclado|mouse|ratón|raton|impresora|webcam|periférico|periferico) ' THEN 43
+    WHEN CONCAT(' ', LOWER(p.`name`), ' ', LOWER(p.`description`), ' ') REGEXP ' (memoria ram|ssd|disco duro|procesador|tarjeta gráfica|tarjeta grafica|motherboard|fuente de poder) ' THEN 42
+    WHEN CONCAT(' ', LOWER(p.`name`), ' ', LOWER(p.`description`), ' ') REGEXP ' (electrónica|electronica|cargador|tablet|smartwatch|cámara|camara|usb|bluetooth) ' THEN 36
+    WHEN CONCAT(' ', LOWER(p.`name`), ' ', LOWER(p.`description`), ' ') REGEXP ' (cafetera|café|cafe|licuadora|freidora|horno|microondas|sartén|sarten|olla|vaso|utensilio de cocina) ' THEN 50
+    WHEN CONCAT(' ', LOWER(p.`name`), ' ', LOWER(p.`description`), ' ') REGEXP ' (electrodoméstico|electrodomestico|refrigerador|lavadora|aspiradora|ventilador|plancha) ' THEN 51
+    WHEN CONCAT(' ', LOWER(p.`name`), ' ', LOWER(p.`description`), ' ') REGEXP ' (sofá|sofa|silla|mesa|escritorio|cama|mueble) ' THEN 52
+    WHEN CONCAT(' ', LOWER(p.`name`), ' ', LOWER(p.`description`), ' ') REGEXP ' (decoración|decoracion|lámpara|lampara|cuadro|florero|cojín|cojin) ' THEN 53
+    WHEN CONCAT(' ', LOWER(p.`name`), ' ', LOWER(p.`description`), ' ') REGEXP ' (perfume|fragancia|maquillaje|labial|crema|shampoo|piel|cabello|protector solar|belleza) ' THEN 60
+    WHEN CONCAT(' ', LOWER(p.`name`), ' ', LOWER(p.`description`), ' ') REGEXP ' (bicicleta|ciclismo|casco de bici) ' THEN 73
+    WHEN CONCAT(' ', LOWER(p.`name`), ' ', LOWER(p.`description`), ' ') REGEXP ' (fútbol|futbol|balón|balon|uniforme deportivo) ' THEN 71
+    WHEN CONCAT(' ', LOWER(p.`name`), ' ', LOWER(p.`description`), ' ') REGEXP ' (yoga|tapete de yoga) ' THEN 75
+    WHEN CONCAT(' ', LOWER(p.`name`), ' ', LOWER(p.`description`), ' ') REGEXP ' (camping|campamento|tienda de campaña|mochila de campismo) ' THEN 76
+    WHEN CONCAT(' ', LOWER(p.`name`), ' ', LOWER(p.`description`), ' ') REGEXP ' (mancuerna|pesa|fitness|entrenamiento|running|correr) ' THEN 70
+    WHEN CONCAT(' ', LOWER(p.`name`), ' ', LOWER(p.`description`), ' ') REGEXP ' (juguete|muñeca|muñeco|figura coleccionable|juego de mesa) ' THEN 77
+    WHEN CONCAT(' ', LOWER(p.`name`), ' ', LOWER(p.`description`), ' ') REGEXP ' (videojuego|consola|playstation|xbox|nintendo|gaming) ' THEN 80
+    WHEN CONCAT(' ', LOWER(p.`name`), ' ', LOWER(p.`description`), ' ') REGEXP ' (libro|novela|cuaderno|papelería|papeleria|pluma|lápiz|lapiz) ' THEN 84
+    WHEN CONCAT(' ', LOWER(p.`name`), ' ', LOWER(p.`description`), ' ') REGEXP ' (perro|canino|croqueta|gato|felino|mascota) ' THEN 93
+    WHEN CONCAT(' ', LOWER(p.`name`), ' ', LOWER(p.`description`), ' ') REGEXP ' (auto|automóvil|automovil|automotriz|refacción|refaccion|llanta|aceite para motor) ' THEN 89
+    WHEN CONCAT(' ', LOWER(p.`name`), ' ', LOWER(p.`description`), ' ') REGEXP ' (zapato|tenis|bota|sandalia|calzado) ' THEN 19
+    WHEN CONCAT(' ', LOWER(p.`name`), ' ', LOWER(p.`description`), ' ') REGEXP ' (playera|camisa|pantalón|pantalon|vestido|blusa|sudadera|ropa|chamarra) ' THEN 1
+    WHEN CONCAT(' ', LOWER(p.`name`), ' ', LOWER(p.`description`), ' ') REGEXP ' (bolsa|mochila|reloj|lentes|gorra|cinturón|cinturon|cartera|joyería|joyeria) ' THEN 28
+    ELSE 36
+  END AS `category_ID`,
+  p.`ID` AS `product_ID`,
+  IF(MOD(p.`ID`, 5) = 0, b'0', b'1') AS `status`
+FROM `tb_products` AS p;
+
 /*!40000 ALTER TABLE `tbd_products_categories` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
