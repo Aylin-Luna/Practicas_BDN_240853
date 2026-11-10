@@ -4,12 +4,13 @@
 Periodo: Septiembre - Diciembre 2026
 
 ---
-|ID|Numero de Práctica|Nombre de la Práctica|Potenciador|Estatus
-|---|---|---|---|---|
-| 1. | Práctica 02 | Conexión Remota en MYSQL | 42 | Concluida |
-| 2. | Conexiones Remotas para Bases de Datos SQL | Crear y administrar usuarios y privilegios para conexiones desde internet o redes locales | 60 | Concluida |
-| 3. | Práctica 03 | Manipulación de datos en conexiones remotas | 50 | Concluida |
 
+|No.| Nombre de la practica | Descripción | Potenciador | Estatus | URL |
+|---|---|---|---|---|
+|1.|Metodología de Evaluación de la Materia| Transcribir en libreta, comprender la metodología y fechas de evaluación de la asignatura | 5 | 🟢 Conlcuida |  |
+|2.|Conexiones Remotas para Bases de Datos SQL| Crear y administrar usuarios y privilegios para conexiones desde internet o redes locales | 60 | 🟢 Conlcuida | **[PRACTICA 02]([https://github.com/Aylin-Luna/Practicas_BDN_240853/tree/main/Practica02)** |
+| 3. | Manipulación de Datos en Conexiones Remotas a Bases de Datos Relacionales | Crear Procedimientos Almacenados, Funciones, Tablas Derivada, Importación de Datos en el Contexto de E-Commerce | 100 | Concluida | **[PRACTICA 03]([https://github.com/Aylin-Luna/Practicas_BDN_240853/tree/main/Practica03])** |
+| 4. | Examen Práctico Instalación de Postgre y MySQL en un VPS | Instalar, Configurar, Desplegar y Simular datos en los Servicios de Bases de Datos Relacionales Remotas | ? | 🟡 En progreso | **[PRACTICA 04]([https://github.com/Aylin-Luna/Practicas_BDN_240853/tree/practica-04/Practica04)** |
 
 # Práctica 02 - Base de Datos `db_test`
 
